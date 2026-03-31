@@ -26,10 +26,10 @@ jobs:
           path: micropython
           submodules: recursive
 
-      - name: Install Build Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential python3 cmake
+      - name: Install ARM GCC
+        uses: charliemclachlan/arm-gcc-action@v1
+        with:
+          set-path: true
 
       - name: Build mpy-cross
         run: make -C micropython/mpy-cross
@@ -41,13 +41,13 @@ jobs:
           
       - name: Rename Firmware
         run: |
-          mv micropython/ports/rp2/build-PICO_W/firmware.uf2 OpenERV_${{ matrix.model }}_${{ github.ref_name }}.uf2
+          mv micropython/ports/rp2/build-PICO_W/firmware.uf2 OpenERV_${{ matrix.model }}.uf2
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: OpenERV_${{ matrix.model }}_Firmware
-          path: OpenERV_${{ matrix.model }}_${{ github.ref_name }}.uf2
+          path: OpenERV_${{ matrix.model }}.uf2
 
   release:
     needs: build

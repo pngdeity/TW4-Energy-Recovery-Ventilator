@@ -22,7 +22,8 @@ def analyze_stl(stl_path, config_path):
     # And we suppress stability warnings by redirecting stderr
     temp_gcode = "/tmp/temp_slice.gcode"
     try:
-        # Note: If the slicer returns 1 due to warnings, we still try to read the gcode if it exists
+        # PrusaSlicer returns 1 for warnings (like stability issues). 
+        # We ignore the exit code and check if the gcode was actually produced.
         subprocess.run([
             "prusa-slicer", "--export-gcode", 
             "--load", config_path,
@@ -30,18 +31,23 @@ def analyze_stl(stl_path, config_path):
             "--bed-shape", "0x0,500x0,500x500,0x500",
             "--output", temp_gcode,
             stl_path
-        ], capture_output=True)
+        ], capture_output=True, check=False)
         
-        with open(temp_gcode, 'r') as f:
-            content = f.read()
-            # PrusaSlicer embeds stats at the end of the file
-            # Format: ; estimated printing time (normal mode) = 4h 22m 15s
-            # Format: ; filament used [g] = 45.2
-            time_match = re.search(r"estimated printing time .* = (.*)", content)
-            weight_match = re.search(r"filament used \[g\] = ([\d\.]+)", content)
-            
-            print_time = time_match.group(1) if time_match else "Unknown"
-            weight = weight_match.group(1) if weight_match else "Unknown"
+        if os.path.exists(temp_gcode):
+            with open(temp_gcode, 'r') as f:
+                content = f.read()
+                time_match = re.search(r"estimated printing time .* = (.*)", content)
+                weight_match = re.search(r"filament used \[g\] = ([\d\.]+)", content)
+                
+                print_time = time_match.group(1) if time_match else "Unknown"
+                weight = weight_match.group(1) if weight_match else "Unknown"
+        else:
+            print_time = "Slicing Failed"
+            weight = "Slicing Failed"
+    except Exception as e:
+        print(f"Error slicing {stl_path}: {e}")
+        print_time = "Analysis Error"
+        weight = "Analysis Error"
     except Exception:
         print_time = "Analysis Error"
         weight = "Analysis Error"

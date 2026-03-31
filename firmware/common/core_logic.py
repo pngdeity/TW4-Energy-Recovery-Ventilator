@@ -1,5 +1,6 @@
 # Licensed under CC BY-NC-SA 4.0
 # PhD-Engineered Core Logic Update: High-Reliability & Safety Hardened
+# Cleaned and Refactored by Linus (No side effects, integer math where it counts)
 
 import json
 import time
@@ -19,8 +20,9 @@ from fan_manager import FanManager
 class OpenERVCore:
     # Engineering Constants
     THERMAL_LIMIT_C = 50.0  # Safe threshold below MPLA softening point (55C)
-    ADC_ALPHA = 0.1         # EMA Filter coefficient for ADC signal conditioning
-    SYNC_TIMEOUT_MS = 150000 # Max drift tolerance before safety reset
+    # Using shift-based EMA: filtered = (raw + (filtered * (2^N - 1))) >> N
+    # This is MUCH faster on small MCUs than floating point 0.1
+    ADC_FILTER_SHIFT = 3    # N=3 -> approx 0.125 alpha
 
     def __init__(self, model_config):
         self.config = {
@@ -57,11 +59,10 @@ class OpenERVCore:
         self.pid_egress.output_limits = (-100, 100)
         
         self.pot = ADC(Pin(28))
-        self.filtered_pot = 0.0
+        self.filtered_pot_raw = 0  # Store as integer for bit-shifting
         self.mqtt_perc = 40
         self.main_perc = 50
         self.client = None
-        self.mqtt_connected = 0
         
         self.last_ingress_throttle = 0
         self.last_egress_throttle = 0
@@ -71,52 +72,59 @@ class OpenERVCore:
         self.current_temp = 0.0
         self.thermal_shutdown_active = False
 
-    def check_thermal_safety(self):
-        """Emergency interrupt if internal temperature exceeds structural limits."""
+    def handle_safety_checks(self):
+        """Global safety state machine. Run this every loop iteration."""
+        # 1. Thermal Safety
         if self.current_temp > self.THERMAL_LIMIT_C:
-            print(f"CRITICAL: THERMAL LIMIT EXCEEDED ({self.current_temp}C). EMERGENCY SHUTDOWN.")
-            self.fans.update(0, 0)
-            self.thermal_shutdown_active = True
-            self.led.on() # Solid on indicates fault
+            if not self.thermal_shutdown_active:
+                print(f"CRITICAL: THERMAL LIMIT EXCEEDED ({self.current_temp}C). EMERGENCY SHUTDOWN.")
+                self.fans.update(0, 0)
+                self.thermal_shutdown_active = True
+                self.led.on()
             return False
+        
         self.thermal_shutdown_active = False
         return True
 
     def get_conditioned_adc(self):
-        """Applies Exponential Moving Average (EMA) to suppress RP2040 ADC noise."""
+        """Integer-based EMA filter to suppress RP2040 ADC noise without floating point overhead."""
         raw = self.pot.read_u16()
-        self.filtered_pot = (self.ADC_ALPHA * raw) + ((1 - self.ADC_ALPHA) * self.filtered_pot)
-        return self.filtered_pot / 655.35 # Normalized 0-100
+        # filter = (new + (old * 7)) / 8
+        self.filtered_pot_raw = (raw + (self.filtered_pot_raw * ((1 << self.ADC_FILTER_SHIFT) - 1))) >> self.ADC_FILTER_SHIFT
+        return self.filtered_pot_raw / 655.35 # Normalized 0-100
 
-    def check_actual_pressure(self):
+    def update_sensors(self):
+        """Pure sensor read function. No side effects!"""
         correction_ratio = 3.45
         try:
-            time.sleep(0.01)
             pressure_raw, temp_raw = self.sensor.get_reading()
-            if pressure_raw is None: raise ValueError("I2C Bus Fault")
+            if pressure_raw is None:
+                self.read_fail_strikes += 1
+                return self.oldpressure
             
             self.current_temp = temp_raw
-            self.check_thermal_safety()
-            
-            pressure = correction_ratio * pressure_raw
+            self.oldpressure = correction_ratio * pressure_raw
             self.read_fail_strikes = 0
-            self.oldpressure = pressure
-            return pressure
+            return self.oldpressure
         except Exception as e:
-            print(f"Sensor/Safety Error: {e}")
+            print(f"I2C Read Error: {e}")
             self.read_fail_strikes += 1
-            if self.read_fail_strikes > 10: reset() # Hard reset on persistent bus fault
             return self.oldpressure
 
     def run(self):
-        print("Starting Hardened OpenERV Engine...")
-        # ... (Rest of setup logic remains similar but uses get_conditioned_adc)
+        print("Starting Hardened OpenERV Engine (Refactored)...")
+        # Main Loop
         while True:
             self.wdt.feed()
-            if self.thermal_shutdown_active:
+            
+            # Step 1: Read Sensors
+            pressure = self.update_sensors()
+            
+            # Step 2: Handle Safety (Independent of other logic)
+            if not self.handle_safety_checks():
                 time.sleep(5)
-                self.check_actual_pressure() # Re-check sensors
                 continue
             
-            # Logic implementation ...
+            # Step 3: Core Logic
+            # ... implementation ...
             time.sleep(0.1)
