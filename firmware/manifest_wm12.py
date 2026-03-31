@@ -5,7 +5,7 @@
 include("$(PORT_DIR)/boards/manifest.py")
 
 # Freeze the shared library
-freeze("common")
+freeze("$(FROZEN_DIR)/common")
 
 # Freeze the WM12 model entry point
-freeze("wm12", "main.py")
+freeze("$(FROZEN_DIR)/wm12", "main.py")

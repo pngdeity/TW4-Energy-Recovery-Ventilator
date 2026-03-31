@@ -31,20 +31,32 @@ jobs:
         with:
           repository: micropython/micropython
           path: micropython
-          submodules: recursive
+          fetch-depth: 0 # Ensure we get all tags/history for versioning
 
       - name: Install ARM GCC
         uses: carlosperate/arm-none-eabi-gcc-action@v1
         with:
           release: 'latest'
 
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install pyelftools
+
       - name: Build mpy-cross
         run: make -C micropython/mpy-cross
+
+      - name: Initialize MicroPython submodules
+        run: |
+          cd micropython
+          make -C ports/rp2 submodules
 
       - name: Build RP2 Port (RPI_PICO_W)
         run: |
           cd micropython/ports/rp2
-          make BOARD=RPI_PICO_W FROZEN_MANIFEST=../../../openerv/firmware/manifest_${{ matrix.model }}.py
+          make BOARD=RPI_PICO_W \
+               FROZEN_MANIFEST=../../../openerv/firmware/manifest_${{ matrix.model }}.py \
+               USER_C_MODULES= \
+               FROZEN_DIR=../../../openerv/firmware
           
       - name: Rename Firmware
         run: |
