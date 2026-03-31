@@ -47,8 +47,8 @@ jobs:
 
       - name: Initialize MicroPython submodules
         run: |
-          cd micropython
-          make -C ports/rp2 submodules
+          cd micropython/ports/rp2
+          make BOARD=RPI_PICO_W submodules
 
       - name: Build RP2 Port (RPI_PICO_W)
         run: |
