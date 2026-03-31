@@ -2,7 +2,7 @@ name: STL Manufacturing Analysis
 
 on:
   push:
-    branches: [ main, feature/phd-engineered-updates ]
+    branches: [ main ]
     paths:
       - 'design/parts/**/*.stl'
       - 'design/config/*.ini'
