@@ -4,9 +4,9 @@ This directory contains the electrical design files for the OpenERV systems.
 
 ## Contents
 
-- **`tw4_schematic.png`**: High-level wiring and component diagram for the TW4 model.
-- **`wm12_schematic.pdf`**: Detailed schematic for the WM12 model.
-- **`sdp-810-125A pinout.png`**: Pinout reference for the Sensirion differential pressure sensor.
+- **`pcb_schematic_v2.png`**: Current schematic for the TW4/WM12 main board.
+- **`pcb_schematic_v1.pdf`**: Previous version or alternative view of the schematic.
+- **`sensor_sdp810_pinout.png`**: Pinout reference for the Sensirion SDP810 differential pressure sensor.
 - **`source/`**: Contains the raw EDA source files.
   - `1-Schematic_TW4 Main board2.json`: EasyEDA schematic source.
   - `1-PCB_PCB_TW4 Main board2.json`: EasyEDA PCB layout source.
