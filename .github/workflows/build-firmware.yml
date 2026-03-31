@@ -1,0 +1,66 @@
+name: Build Flashable Firmware (UF2)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        model: [tw4, wm12]
+    
+    steps:
+      - name: Checkout OpenERV
+        uses: actions/checkout@v3
+        with:
+          path: openerv
+
+      - name: Checkout MicroPython
+        uses: actions/checkout@v3
+        with:
+          repository: micropython/micropython
+          path: micropython
+          submodules: recursive
+
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential python3 cmake
+
+      - name: Build mpy-cross
+        run: make -C micropython/mpy-cross
+
+      - name: Build RP2 Port (PICO_W)
+        run: |
+          cd micropython/ports/rp2
+          make BOARD=PICO_W FROZEN_MANIFEST=../../../openerv/firmware/manifest_${{ matrix.model }}.py
+          
+      - name: Rename Firmware
+        run: |
+          mv micropython/ports/rp2/build-PICO_W/firmware.uf2 OpenERV_${{ matrix.model }}_${{ github.ref_name }}.uf2
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: OpenERV_${{ matrix.model }}_Firmware
+          path: OpenERV_${{ matrix.model }}_${{ github.ref_name }}.uf2
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            OpenERV_tw4_Firmware/*.uf2
+            OpenERV_wm12_Firmware/*.uf2
+          generate_release_notes: true
