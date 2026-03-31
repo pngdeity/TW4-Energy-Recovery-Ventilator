@@ -55,8 +55,7 @@ jobs:
           cd micropython/ports/rp2
           make BOARD=RPI_PICO_W \
                FROZEN_MANIFEST=$GITHUB_WORKSPACE/openerv/firmware/manifest_${{ matrix.model }}.py \
-               USER_C_MODULE= \
-               FROZEN_DIR=$GITHUB_WORKSPACE/openerv/firmware
+               USER_C_MODULES=
           
       - name: Rename Firmware
         run: |

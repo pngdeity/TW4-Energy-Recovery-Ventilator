@@ -4,9 +4,8 @@
 # Include the standard board modules (required for WiFi on Pico W)
 include("$(PORT_DIR)/boards/manifest.py")
 
-# Freeze the shared library
-# $(FROZEN_DIR) is set in the GitHub Action to point to firmware/
-freeze("$(FROZEN_DIR)/common")
+# Freeze the shared library (relative to this manifest)
+freeze("common")
 
 # Freeze the TW4 model entry point
-freeze("$(FROZEN_DIR)/tw4", "main.py")
+freeze("tw4", "main.py")
