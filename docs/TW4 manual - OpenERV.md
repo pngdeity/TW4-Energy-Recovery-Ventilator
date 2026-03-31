@@ -396,7 +396,7 @@ Made in freedom.
 As of October 13, 2024, it remains on my list of things to do to
 actually install a 6 inch pipe in a wall myself. However there are many
 different types of walls, exterior coverings and so on. For this reason
-it is not a completely trivial undertaking and I cannot provide detailed
+it is not a simple undertaking and I cannot provide specific
 instructions or advice specific to any given situation, aside from:
 
 - The importance of avoiding avoiding plumbing and electrical lines and
@@ -525,7 +525,7 @@ Procedure:
     under the cosmetic cover. It's even harder if the interior plate is
     already on the pipe, because you can't reach in to stuff the wires
     into posiion. I have no good solution for this right now except to
-    clean up the wires so it's easy to take the cover off/put it back on
+    organize the wires so it's easy to take the cover off/put it back on
     while the plate is attached to the pipe.
 
 8.  Hold the interior cover/plate assembly in one hand, connect the
@@ -888,7 +888,7 @@ with similar specs very easily.
 The fans can be 2, 3 or 4 pin fans. If they are 4 pin fans you would
 just connect the PWM pin directly to the pico, not to the mosfet boards.
 Almost any 120 mm PC fan will work to some degree, but the ones the TW4
-comes with are particularly good, powerful, quiet, long lasting, and
+comes with are particularly good, high-flow, quiet, long lasting, and
 waterproof.
 
 I used screw terminal connectors so you do not need to do much or any
@@ -947,7 +947,7 @@ The bom has to be reviewed and updated as of dec 23 2024.
                                                                                                                                              sda pressure sesnor                                                                                                                                    
                                                                                                                                              3 wire 26 awg ribbon cable for fan (extension wire) 60 cm                                                                                              1
                                                                                                                                              3 wire 26 awg ribbon cable for fan (indoor plate) 15 cm                                                                                                1
-                                                                                                                                             Adjustable \*\*make sure you set it to 5 volts before turning things on\*\*\* voltage regulator for servo and pico, capably of 1 amp for servo.        1
+                                                                                                                                             Adjuversioned \*\*make sure you set it to 5 volts before turning things on\*\*\* voltage regulator for servo and pico, capably of 1 amp for servo.        1
                                                                                                                                              12 v power supply 2amp                                                                                                                                 1
                                                                                                                                              2.54 mm screw terminal connectors 14-position for pico                                                                                                 4
                                                                                                                                              terminal block connectors, 2 circuit can use the non-screw types in a pinch, if you pull that hard on the cable it\'s probably not bad it comes out.   1

@@ -9,14 +9,14 @@
 [![Build Flashable Firmware](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/actions/workflows/build-firmware.yml/badge.svg)](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/actions/workflows/build-firmware.yml)
 [![STL Manufacturing Analysis](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/actions/workflows/stl-analysis.yml/badge.svg)](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/actions/workflows/stl-analysis.yml)
 
-OpenERV is a high-efficiency, low-cost DIY **Energy Recovery Ventilator (ERV)** system designed to provide fresh outdoor air while recovering heat and moisture from the exhaust stream. This repository contains the complete firmware, mechanical designs, and documentation for the **TW4** (Through-Wall) and **WM12** (Window-Mounted) models.
+OpenERV is a 87%+ efficiency DIY **Energy Recovery Ventilator (ERV)** system designed to provide fresh outdoor air while recovering heat and moisture from the exhaust stream. This repository contains the complete firmware, mechanical designs, and documentation for the **TW4** (Through-Wall) and **WM12** (Window-Mounted) models.
 
 ## Key Features
 - **High Efficiency**: 87%+ heat recovery efficiency at 60 CFM.
 - **Precision Control**: Integrated PID loops for automated pressure regulation using Sensirion SDP810 sensors.
 - **IoT Enabled**: Built-in WiFi and MQTT support for remote monitoring and automation.
-- **DIY Friendly**: Optimized for 3D printing and off-the-shelf components.
-- **Smart Synchronization**: Leader/Follower UDP synchronization for multi-module installations.
+- **DIY**: Optimized for 3D printing and off-the-shelf components.
+- **UDP Synchronization**: Leader/Follower UDP synchronization for multi-module installations.
 
 ## Project Structure
 
@@ -26,7 +26,7 @@ OpenERV is a high-efficiency, low-cost DIY **Energy Recovery Ventilator (ERV)** 
 - **`design/`**: Mechanical and electrical design assets.
   - `parts/`: STL and STEP files for all printable components.
   - `schematics/`: PCB designs and wiring diagrams.
-- **`docs/`**: Comprehensive manuals, assembly guides, and technical specifications.
+- **`docs/`**: Manuals, assembly guides, and technical specifications.
 - **`research/`**: Historical CAD iterations and experimental validation data.
 - **`scripts/`**: Automation utilities for manufacturing analysis and BOM extraction.
 
@@ -47,7 +47,7 @@ After flashing, you must configure your local environment:
 
 ## Documentation & Roadmap
 
-Detailed manuals and assembly instructions:
+Manuals and assembly instructions:
 - [DIY Manufacturing Guide](./docs/Document%20to%20aid%20DIY%20manufacturing%20of%20the%20OpenERV%20TW4%20and%20WM12.md)
 - [TW4 Manual](./docs/TW4%20manual%20-%20OpenERV.md)
 - [WM12 Manual](./docs/OpenERV%20WM12%20manual.md)
@@ -61,5 +61,5 @@ This project is a formalized fork of the OpenERV system originally developed by 
 
 ---
 <p align="center">
-  <i>Making high-performance residential ventilation accessible to everyone.</i>
+  <i>Making ventilation residential ventilation accessible to everyone.</i>
 </p>

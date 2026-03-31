@@ -102,9 +102,9 @@ class OpenERVCore:
         return True
 
     def get_conditioned_adc(self):
-        """Integer-based EMA filter with high-precision accumulation."""
+        """Integer-based EMA filter with 8-sample accumulation."""
         raw = self.pot.read_u16()
-        # Scale up the input to match the high-precision accumulator
+        # Scale up the input to match the 8-sample accumulator
         # filtered = (new_scaled + (old_accum * 7)) / 8
         self.filtered_pot_raw = (raw + (self.filtered_pot_raw * 7)) >> 3
         return self.filtered_pot_raw / 655.35 # Normalized 0-100

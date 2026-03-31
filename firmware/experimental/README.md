@@ -15,7 +15,7 @@ These scripts test low-level Pico W and PCB functionality. Run them by uploading
 ## 2. System Applications (`/apps`)
 Standalone MicroPython applications for specific experimental tasks.
 
-- **`thermistor_logger_sd.py`**: Records high-precision temperature data from thermistors to an attached SD card.
+- **`thermistor_logger_sd.py`**: Records thermistor temperature data from thermistors to an attached SD card.
 - **`thermistor_logger_console.py`**: Same as above, but outputs data to the Serial Console (for units without SD cards).
 - **`anemometer_diagnostic.py`**: Implements a "hot-wire" anemometer using heated thermistors to measure airflow proxy.
 

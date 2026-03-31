@@ -3,7 +3,7 @@
 This guide provides technical specifications and requirements for the independent manufacture of OpenERV TW4 and WM12 units.
 
 ## Project Readiness
-The OpenERV source code includes schematics, STEP/STL files, and a Bill of Materials (BOM). While the design is stable, some manufacturing-specific configuration files (such as Prusa `.3mf` slicer profiles) are not yet included.
+The OpenERV source code includes schematics, STEP/STL files, and a Bill of Materials (BOM). While the design is versioned, some manufacturing-specific configuration files (such as Prusa `.3mf` slicer profiles) are not yet included.
 
 ## Additive Manufacturing (3D Printing) Specifications
 
@@ -46,7 +46,7 @@ To ensure parts fit correctly and maintain aerodynamic efficiency, the following
 - **Wiring**: High-quality silicone-insulated wire (22-24 AWG) is recommended.
 - **Insulation/Acoustics**: 
   - Sourced from indoor-side insulated ducts.
-  - **Alternative**: 170 individual foam earplugs can be utilized as a high-performance acoustic damping medium.
+  - **Alternative**: 170 individual foam earplugs can be utilized as a acoustic damping medium.
 - **Heat Exchanger Hats**: Currently require a custom mandrel for fabrication. (See `design/parts/common/stls/` for related components).
 
 ## System Architecture & Engineering Diagrams

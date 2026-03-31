@@ -15,7 +15,7 @@ This roadmap outlines the critical tasks and features required to reach a **Vers
 ## 3. User Experience (UX)
 - [ ] **IoT Provisioning (V1.0)**: Mature the Captive Portal to include a WiFi scanner (showing available SSIDs).
 - [ ] **Persistent Variables Validation**: Add schema validation for `persistent_vars.json` to prevent boot loops from malformed JSON.
-- [ ] **Home Assistant Discovery**: Implement MQTT discovery for seamless smart home integration.
+- [ ] **Home Assistant Discovery**: Implement MQTT discovery for direct smart home integration.
 
 ## 4. Electronics & Manufacturing
 - [ ] **KiCad Migration**: Transition the main PCB from EasyEDA to KiCad for full open-source toolchain support.
