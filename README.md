@@ -1,44 +1,57 @@
-# OpenERV TW4 and WM12 - Fork
+<p align="center">
+  <img src="docs/images/logo.png" alt="OpenERV Logo" width="400">
+</p>
 
-This repository contains firmware, design files, and documentation for the **OpenERV TW4** and **WM12** Energy Recovery Ventilators.
+# OpenERV TW4 and WM12
 
-## Licensing
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![OKH Compliance](https://img.shields.io/badge/OKH-v1.0%20Compliant-green.svg)](okh.yml)
+[![Build Flashable Firmware](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/actions/workflows/build-firmware.yml/badge.svg)](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/actions/workflows/build-firmware.yml)
+[![STL Manufacturing Analysis](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/actions/workflows/stl-analysis.yml/badge.svg)](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/actions/workflows/stl-analysis.yml)
 
-The original OpenERV project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
+OpenERV is a high-efficiency, low-cost DIY **Energy Recovery Ventilator (ERV)** system designed to provide fresh outdoor air while recovering heat and moisture from the exhaust stream. This repository contains the complete firmware, mechanical designs, and documentation for the **TW4** (Through-Wall) and **WM12** (Window-Mounted) models.
 
-As a fork of the original work, all modifications and contributions in this repository are also licensed under **CC BY-NC-SA 4.0**, as required by the **ShareAlike** clause of the license.
-
-For the full legal text, please refer to the `LICENSE` file.
+## Key Features
+- **High Efficiency**: 87%+ heat recovery efficiency at 60 CFM.
+- **Precision Control**: Integrated PID loops for automated pressure regulation using Sensirion SDP810 sensors.
+- **IoT Enabled**: Built-in WiFi and MQTT support for remote monitoring and automation.
+- **DIY Friendly**: Optimized for 3D printing and off-the-shelf components.
+- **Smart Synchronization**: Leader/Follower UDP synchronization for multi-module installations.
 
 ## Project Structure
 
-The repository is organized as follows:
-
-- **`firmware/`**: Active source code for the devices.
-  - `common/`: Shared core engine and drivers.
+- **`firmware/`**: Hardened MicroPython source code for the Raspberry Pi Pico W.
+  - `common/`: Modular core engine, drivers, and safety state machine.
   - `tw4/`, `wm12/`: Model-specific entry points.
-- **`design/`**: Mechanical and electrical design files (STLs, STEPs, Schematics).
-- **`docs/`**: Project documentation and assembly guides.
-- **`research/`**: Historical CAD designs, experimental sensor logs, and validation data.
-- **`scripts/`**: Automation tools (e.g., STL manufacturing analysis).
+- **`design/`**: Mechanical and electrical design assets.
+  - `parts/`: STL and STEP files for all printable components.
+  - `schematics/`: PCB designs and wiring diagrams.
+- **`docs/`**: Comprehensive manuals, assembly guides, and technical specifications.
+- **`research/`**: Historical CAD iterations and experimental validation data.
+- **`scripts/`**: Automation utilities for manufacturing analysis and BOM extraction.
 
 ## Installation (Flashable Firmware)
 
-The easiest way to install OpenERV is to use the pre-compiled **Flashable Firmware (UF2)** images:
+The fastest way to deploy OpenERV is to use our pre-compiled firmware images:
 
-1. Download the latest `.uf2` image for your model (TW4 or WM12) from the [GitHub Releases](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/releases) page.
+1. Download the latest **`.uf2`** binary for your model from the [GitHub Releases](https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/releases) page.
 2. Hold the **BOOTSEL** button on your Raspberry Pi Pico W and connect it to your computer via USB.
-3. Drag and drop the `.uf2` file into the RPI-RP2 drive. The device will reboot automatically.
+3. Drag and drop the `.uf2` file into the `RPI-RP2` drive. The unit will automatically reboot into the OpenERV engine.
 
 ## Configuration
 
-After flashing, you must provide your local settings:
-1. Copy `firmware/config_templates/[model]_persistent_vars.json` to the root of your Pico's filesystem.
-2. Rename it to `persistent_vars.json`.
-3. Edit the file to include your WiFi credentials and MQTT settings.
+After flashing, you must configure your local environment:
+1. Locate the relevant template in `firmware/config_templates/`.
+2. Copy it to the root of your Pico's filesystem as `persistent_vars.json`.
+3. Edit the file to include your WiFi credentials, model ID, and optional Adafruit IO keys.
 
 ## Original Project & Attribution
 
-This project is based on the OpenERV system by Anthony Douglas and the OpenERV community.
-- **Original Author**: Anthony Douglas
-- **Project Website**: [OpenERV](https://openerv.org)
+This project is a formalized fork of the OpenERV system originally developed by **Anthony Douglas**.
+- **Original Website**: [openerv.ca](https://www.openerv.ca)
+- **Licensing**: This project is licensed under **CC BY-NC-SA 4.0**. See [LICENSE](LICENSE) for details.
+
+---
+<p align="center">
+  <i>Making high-performance residential ventilation accessible to everyone.</i>
+</p>
