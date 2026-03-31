@@ -14,10 +14,10 @@ All STL files were analyzed using `admesh` for geometric integrity and physical 
 | `filter_seat.stl` | Healthy | 1 | 80,682 | 214.9 x 182.0 x 20.0 | None |
 | `hat_seat.stl` | Healthy | 1 | 34,282 | 173.0 x 177.3 x 12.0 | None |
 | `indoor_plate.stl` | Healthy | 1 | 161,253 | 187.7 x 219.1 x 14.5 | Tight fit for 220mm beds. |
-| `interior_cover.stl` | **Degraded** | 1 | 180,584 | 200.0 x 220.8 x 75.1 | 61 flipped normals; 6 backwards edges. |
+| `interior_cover.stl` | Healthy (Fixed) | 1 | 180,584 | 200.0 x 220.8 x 75.1 | Normals repaired. |
 | `noise_splitter.stl` | Healthy | 2 | 669,905 | 184.0 x 166.9 x 218.8 | Multi-body part (intentional?). |
-| `outdoor_cover.stl` | **Degraded** | 1 | 394,679 | 223.0 x 230.8 x 146.8 | 8 flipped normals. Requires 250mm+ bed. |
-| `outdoor_plate.stl` | **Degraded** | 1 | 462,341 | 215.0 x 220.0 x 18.0 | 2,042 flipped normals. |
+| `outdoor_cover.stl` | Healthy (Fixed) | 1 | 394,679 | 223.0 x 230.8 x 146.8 | Normals repaired. Requires 250mm+ bed. |
+| `outdoor_plate.stl` | Healthy (Fixed) | 1 | 462,341 | 215.0 x 220.0 x 18.0 | Normals repaired. |
 | `pipe_extension.stl` | Healthy | 1 | 31,915 | 111.6 x 111.6 x 33.0 | None |
 | `pot_mount.stl` | Healthy | 1 | 3,914 | 23.0 x 23.0 x 29.2 | None |
 | `pot.stl` | Healthy | 1 | 2,712 | 24.0 x 16.4 x 23.8 | None |
