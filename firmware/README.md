@@ -13,8 +13,9 @@ These directories contain the `main.py` files that serve as the entry point for 
 
 ### 2. Common Library (`/common`)
 This directory contains the engine of the project. By centralizing this logic, we ensure that improvements to the PID loop or networking stability benefit all models simultaneously.
-- **`core_logic.py`**: Contains the `OpenERVCore` class. This is the main state machine that orchestrates sensor reading, PID calculation, fan control, and network synchronization (Leader/Follower).
-- **`sdp810.py`**: A robust, class-based driver for the Sensirion SDP810 differential pressure sensor with built-in error handling.
+- **`core_logic.py`**: Contains the `OpenERVCore` class.
+- **`ha_discovery.py`**: Implements Home Assistant MQTT Discovery for automatic dashboard integration.
+- **`sdp810.py`**: A robust, class-based driver for the Sensirion SDP810.
 - **`fan_manager.py`**: Manages fan pairs and implements the coordinated ramp-down logic required for efficient energy recovery.
 - **`network_manager.py`**: Handles WiFi station connections and Access Point (AP) mode.
 - **`simple_pid/`, `umqtt/`, `uping.py`**: Standardized third-party libraries for PID control, MQTT communication, and network diagnostics.

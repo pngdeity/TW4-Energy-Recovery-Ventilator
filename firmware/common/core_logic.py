@@ -17,6 +17,7 @@ from sdp810 import SDP810
 from network_manager import NetworkManager
 from fan_manager import FanManager
 from provisioning import ProvisioningManager
+from ha_discovery import HADiscovery
 
 class OpenERVCore:
     # Engineering Constants
@@ -43,6 +44,8 @@ class OpenERVCore:
             "max_pressure": 30,
             "pressure_ratioa": 1.0,
             "pressure_ratiob": 1.0,
+            "ha_enabled": False,
+            "node_id": "openerv_01"
         }
         self.config.update(model_config)
         
@@ -54,6 +57,7 @@ class OpenERVCore:
         self.sensor = SDP810(self.i2c)
         self.fans = FanManager()
         self.prov = ProvisioningManager(self.net)
+        self.ha = None
         
         self.pid_ingress = PID(self.config['P_gain'], self.config['I_gain'], 0, setpoint=15)
         self.pid_ingress.output_limits = (-100, 100)
@@ -145,26 +149,54 @@ class OpenERVCore:
         return -1 * self.percent_to_pressure(self.main_perc) / self.config['pressure_ratioa']
 
     def mqtt_callback(self, topic, msg):
-        try:
-            self.mqtt_perc = int(msg.decode())
-            print(f"MQTT command: {self.mqtt_perc}")
-        except: pass
+        topic_str = topic.decode()
+        msg_str = msg.decode()
+        
+        # Handle Home Assistant speed commands
+        if self.ha and f"{self.ha.node_id}/fan/speed/set" in topic_str:
+            try:
+                self.mqtt_perc = int(msg_str)
+                print(f"HA Fan Speed set to: {self.mqtt_perc}")
+            except: pass
+        # Handle Adafruit IO style commands
+        elif self.config['ADAFRUIT_IO_FEEDNAME'].decode() in topic_str:
+            try:
+                self.mqtt_perc = int(msg_str)
+                print(f"MQTT command: {self.mqtt_perc}")
+            except: pass
 
     def connect_mqtt(self):
         if not self.config['ADAFRUIT_USERNAME'] or not self.config['ADAFRUIT_IO_KEY']:
             return 0, None
-        mqtt_feedname = bytes('{:s}/feeds/{:s}'.format(self.config['ADAFRUIT_USERNAME'].decode(), self.config['ADAFRUIT_IO_FEEDNAME'].decode()), 'utf-8')
-        self.mqtt_feedname_publish = bytes('{:s}/feeds/{:s}'.format(self.config['ADAFRUIT_USERNAME'].decode(), self.config['ADAFRUIT_IO_FEEDNAME_publish'].decode()), 'utf-8')
+        
+        server = self.config['ADAFRUIT_IO_URL']
+        user = self.config['ADAFRUIT_USERNAME']
+        key = self.config['ADAFRUIT_IO_KEY']
+        
         client_id = bytes('client_' + str(int.from_bytes(os.urandom(3), 'little')), 'utf-8')
-        client = MQTTClient(client_id=client_id, server=self.config['ADAFRUIT_IO_URL'], user=self.config['ADAFRUIT_USERNAME'], password=self.config['ADAFRUIT_IO_KEY'], ssl=False)
+        client = MQTTClient(client_id=client_id, server=server, user=user, password=key, ssl=False)
         client.set_callback(self.mqtt_callback)
+        
         try:
             self.wdt.feed()
             client.connect()
+            
+            # Setup Home Assistant Discovery if enabled
+            if self.config.get('ha_enabled'):
+                self.ha = HADiscovery(client, self.config['node_id'], self.config.get('model_name', 'TW4'))
+                self.ha.publish_config()
+                client.subscribe(f"openerv/{self.ha.node_id}/fan/speed/set")
+                print("Home Assistant Discovery enabled")
+
+            # Always subscribe to default feed
+            mqtt_feedname = bytes('{:s}/feeds/{:s}'.format(user.decode(), self.config['ADAFRUIT_IO_FEEDNAME'].decode()), 'utf-8')
+            self.mqtt_feedname_publish = bytes('{:s}/feeds/{:s}'.format(user.decode(), self.config['ADAFRUIT_IO_FEEDNAME_publish'].decode()), 'utf-8')
             client.subscribe(mqtt_feedname)
-            print("MQTT Connected")
+            
+            print("MQTT Connected and Subscribed")
             return 1, client
-        except:
+        except Exception as e:
+            print(f"MQTT Connection failed: {e}")
             return 0, None
 
     def period_time_calc(self):
@@ -198,6 +230,7 @@ class OpenERVCore:
         if self.config['leader_or_follower'] == "leader" and wlan and wlan.isconnected():
             self.mqtt_connected, self.client = self.connect_mqtt()
 
+        last_ha_update = 0
         while True:
             self.wdt.feed()
             pressure = self.check_actual_pressure()
@@ -208,9 +241,15 @@ class OpenERVCore:
 
             self.fans.update(self.last_ingress_throttle, self.last_egress_throttle)
             
-            # Simplified state-machine for PhD/Linus hardened core
-            self.main_perc = self.get_conditioned_adc()
+            # Combine local pot and MQTT remote command
+            local_pot = self.get_conditioned_adc()
+            self.main_perc = local_pot # For now prioritizing local or implementing a mixer
             
+            # Publish state to HA periodically
+            if self.ha and time.ticks_diff(time.ticks_ms(), last_ha_update) > 30000:
+                self.ha.update_state(pressure, self.current_temp, self.main_perc)
+                last_ha_update = time.ticks_ms()
+
             period = self.period_time_calc()
             
             # Ingress Phase
@@ -220,6 +259,7 @@ class OpenERVCore:
             while (self.ticks_ms_synced() % period) < period / 2:
                 self.last_ingress_throttle = self.pid_ingress(self.check_actual_pressure())
                 self.wdt.feed()
+                if self.client: self.client.check_msg()
                 time.sleep(0.1)
             self.pid_ingress.set_auto_mode(False)
 
@@ -230,5 +270,6 @@ class OpenERVCore:
             while (self.ticks_ms_synced() % period) >= period / 2:
                 self.last_egress_throttle = self.pid_egress(self.check_actual_pressure())
                 self.wdt.feed()
+                if self.client: self.client.check_msg()
                 time.sleep(0.1)
             self.pid_egress.set_auto_mode(False)
