@@ -150,6 +150,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.1-manual' }}
           files: |
             OpenERV_tw4_Firmware/*.uf2
             OpenERV_wm12_Firmware/*.uf2
