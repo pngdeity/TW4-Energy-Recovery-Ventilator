@@ -16,9 +16,18 @@ Standard PLA is **not suitable** for these units as it lacks the required struct
 
 **Thermal Limit**: The current polymers utilized start to soften at **55°C (131°F)**. This must be considered for hot climate installations or direct sunlight exposure.
 
+### Slicer Calibration & Tolerances
+To ensure parts fit correctly and maintain aerodynamic efficiency, the following slicer settings are recommended:
+
+1. **Supports**: Use **Tree Supports** (Buildplate Only) for parts like the `combi_hood` and `noise_splitter`. This minimizes surface scarring inside critical airflow paths.
+2. **Orientation**: Always align parts so that layer lines are parallel to the primary airflow direction. Refer to `print_specs.json` in the part directories for specific orientations.
+3. **Dimensional Accuracy**: 3D printed holes (e.g., for the fan retention clamp) typically shrink. It is recommended to calibrate your slicer's **Hole Expansion** or **Horizontal Expansion** settings. 
+   - A typical offset of **0.1mm to 0.2mm** is often required for a press-fit or screw-clearance fit.
+4. **Bed Size**: Ensure your printer has a minimum bed dimension of **250mm x 250mm** for the `indoor_plate` and `outdoor_cover`.
+
 ### Component-Specific Settings
 - **Noise Splitter**: Requires 100% infill in the pipe interface region for mechanical strength.
-- **Indoor Cover**: This part requires a print bed with minimum dimensions of **250mm x 250mm**.
+- **Regenerator**: Use the **Lines** infill pattern with **0 top and 0 bottom layers** to create the open-channel heat exchanger matrix.
 
 ## Assembly Requirements
 

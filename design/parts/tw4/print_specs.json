@@ -3,11 +3,15 @@
   "recommended_material": "Modified PLA (MPLA) or High-Temperature PLA",
   "parts": {
     "flow_straightener_22deg_40mm": {
+      "orientation": "Flat face down",
+      "supports": "None (Angles are self-supporting)",
       "infill_percentage": 20,
       "wall_count": 3,
       "notes": "Ensure clean overhangs for aerodynamic efficiency."
     },
     "clamp_v2": {
+      "orientation": "Flat face down",
+      "supports": "None",
       "infill_percentage": 40,
       "wall_count": 4,
       "notes": "Mechanical part under tension; high wall count recommended for screw-holding strength."
