@@ -41,14 +41,14 @@ jobs:
       - name: Build mpy-cross
         run: make -C micropython/mpy-cross
 
-      - name: Build RP2 Port (PICO_W)
+      - name: Build RP2 Port (RPI_PICO_W)
         run: |
           cd micropython/ports/rp2
-          make BOARD=PICO_W FROZEN_MANIFEST=../../../openerv/firmware/manifest_${{ matrix.model }}.py
+          make BOARD=RPI_PICO_W FROZEN_MANIFEST=../../../openerv/firmware/manifest_${{ matrix.model }}.py
           
       - name: Rename Firmware
         run: |
-          mv micropython/ports/rp2/build-PICO_W/firmware.uf2 OpenERV_${{ matrix.model }}.uf2
+          mv micropython/ports/rp2/build-RPI_PICO_W/firmware.uf2 OpenERV_${{ matrix.model }}.uf2
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v7
