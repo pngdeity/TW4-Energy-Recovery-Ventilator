@@ -19,7 +19,8 @@ The repository is organized as follows:
   - `tw4/`, `wm12/`: Model-specific entry points.
 - **`design/`**: Mechanical and electrical design files (STLs, STEPs, Schematics).
 - **`docs/`**: Project documentation and assembly guides.
-- **`archives/`**: Legacy backups and historical data.
+- **`research/`**: Historical CAD designs, experimental sensor logs, and validation data.
+- **`scripts/`**: Automation tools (e.g., STL manufacturing analysis).
 
 ## Installation (Flashable Firmware)
 
