@@ -29,23 +29,25 @@ class SDP810:
     def get_reading(self):
         """Retrieve the differential pressure reading."""
         try:
-            # Command to read data
+            # Command to read data (9 bytes: 2 pressure, 1 CRC, 2 temp, 1 CRC, 3 reserved)
             reading = self.i2c.readfrom(self.addr, 9)
             
-            # The first two bytes are the pressure value
-            # Note: This logic follows the original implementation's bit-banging style
+            # Pressure Calculation
             pressure_value = reading[0] + float(reading[1]) / 255
-            
             if 0 <= pressure_value < 128:
                 differential_pressure = pressure_value * 240 / 256
             elif 128 < pressure_value <= 256:
                 differential_pressure = -(256 - pressure_value) * 240 / 256
             elif pressure_value == 128:
-                differential_pressure = float('inf')  # Out of range
+                differential_pressure = float('inf')
             else:
                 differential_pressure = 0.0
                 
-            return differential_pressure
+            # Temperature Calculation (Scale factor 200 per datasheet)
+            temp_raw = reading[3] + float(reading[4]) / 255
+            temperature = temp_raw * 255 / 200 
+            
+            return differential_pressure, temperature
         except Exception as e:
             print(f"Error reading from SDP810: {e}")
-            return None
+            return None, None

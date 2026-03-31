@@ -49,5 +49,38 @@ To ensure parts fit correctly and maintain aerodynamic efficiency, the following
   - **Alternative**: 170 individual foam earplugs can be utilized as a high-performance acoustic damping medium.
 - **Heat Exchanger Hats**: Currently require a custom mandrel for fabrication. (See `design/parts/common/stls/` for related components).
 
+## System Architecture & Engineering Diagrams
+
+### 1. Wiring Topology (Control Module)
+The following diagram illustrates the standard wiring for the Control Module based on the Raspberry Pi Pico W.
+
+```text
+       +---------------------------------------+
+       |         Raspberry Pi Pico W           |
+       |                                       |
+       |  [GP18] SDA <------> SDP810 SDA (Pin 4)|
+       |  [GP19] SCL <------> SDP810 SCL (Pin 1)|
+       |  [3V3]  VCC <------> SDP810 VDD (Pin 2)|
+       |  [GND]  GND <------> SDP810 GND (Pin 3)|
+       |                                       |
+       |  [GP28] ADC2 <----- Potentiometer (W) |
+       |                                       |
+       |  [GP0]  PWM  ------> MOSFET Ingress   |
+       |  [GP1]  PWM  ------> MOSFET Egress    |
+       |                                       |
+       |  [VSYS] 5V In <----- Buck Regulator   |
+       +---------------------------------------+
+```
+
+### 2. Ventilation Cycle Timing
+OpenERV utilizes a bidirectional airflow pattern. The timing is dynamically calculated based on the power level to maximize heat exchanger efficiency.
+
+```text
+Phase:     |   INGRESS (PID)   |   RAMP DOWN   |   EGRESS (PID)    |   RAMP DOWN   |
+Direction: | <---------------  |      ---      |  ---------------> |      ---      |
+Fans:      | In: ON / Ex: OFF  | All: COASTing | In: OFF / Ex: ON  | All: COASTing |
+Duration:  | 45% of Cycle      | 5% of Cycle   | 45% of Cycle      | 5% of Cycle   |
+```
+
 ## DIY Logistics
 Specialized materials (polypropylene foam, specific acoustic fiberglass, electronic components) are typically sold in bulk. DIYers should account for the higher upfront cost of purchasing these materials compared to a pre-assembled kit.
