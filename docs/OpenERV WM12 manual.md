@@ -47,7 +47,7 @@ https://docs.google.com/document/d/1owr_riiIEUlUa45al_b7uIGe7IZfdDO1xxAAJC9aKUU/
   There can only be so many milligrams of stuff adsorbed by the silica
   gel, and eventually it must all come out, or stay stuck in there. The
   smell should dissipate after a few days of operation, giving you
-  clean outdoor air from then on. The material used in
+  outdoor air from then on. The material used in
   manufacture is non-toxic bio-source PLA, silica gel and isopropyl
   alcohol. There are no toxic substances used.
 
@@ -627,7 +627,7 @@ signals, which is which is in the schematic.
 The part descriptions for electrical parts are in the BOM.
 
 There is a PDF in the source code repository with the schematic, it is
-not copied here because it's too laborious/unreliable to make sure the
+not copied here because it's too laborious/difficult to maintain to make sure the
 various copies are always up to date if there is a change or bug
 correction. You have one copy in one place and then refer to it as
 needed. When things are out of beta it will be copied here.

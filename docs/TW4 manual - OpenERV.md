@@ -316,7 +316,7 @@ height="5.177083333333333in"}
 
 - There is no way to configure the modules/pair with an easy web
   interface or anything. You have to connect by micro usb cable and edit
-  a configuration file. Very reliable but a bit of a hassle. You aren't
+  a configuration file. A configuration file is used, but a bit of a hassle. You aren't
   expected to do it very often.
 
 - The fit of the sound splitter to the pipe is a bit tight, chamfer the
@@ -557,7 +557,7 @@ Procedure:
 
 13. The plan during beta phase is to pair beta units at the factory so
     you don't have to do any setup unless you want them to be accessible
-    over your home wifi network. If you need them to be accessible over
+    over your home wifi network. If you need them to be available on
     Wifi, see the initial setup section.
 
 # Initial setup
@@ -591,7 +591,7 @@ and has internet access when it boots up by watching the diagnostics
 using Thonny.
 
 It pings google.com upon first boot if it can connect to wifi so you can
-see the internet is accessible, then io.adafruit.com and then it tries
+see the internet connectivity is available, then io.adafruit.com and then it tries
 to ping the leader and/or gateway at 192.168.4.1.
 
 Make sure you check every single field is correct in the config file.
@@ -687,7 +687,7 @@ it. You may need to create the feed through the web interface or
 whatever. Or just publish a message to the channel and it should be
 created automatically.
 
-## Smart home stuff (Alexa, Matter, Google Home etc.)
+## Home Automation (Alexa, Matter, Google Home etc.)
 
 The approach I've picked for this is just to use an MQTT adapter/bridge.
 There are modules available for all the major home automation systems to
@@ -696,7 +696,7 @@ convoluted to make the device a native Google Home or Alexa or whatever
 compatible device. A firmware update that includes native functionality
 for at least one of these, probably Matter, could be released but is not
 likely/will not be soon. MQTT does everything it needs to do here and is
-simple, reliable and broadly compatible.
+compatible with common protocols.
 
 # Troubleshooting
 
@@ -762,7 +762,7 @@ some other things. A web configurator takes second priority to flow,
 efficiency and noise.
 
 Looking at the diagnostic info can be very helpful to diagnose errors,
-damage, verify the internet is accessible, etc.
+damage, verify the internet connectivity is available, etc.
 
 ### Putty:
 
@@ -951,7 +951,7 @@ The bom has to be reviewed and updated as of dec 23 2024.
                                                                                                                                              12 v power supply 2amp                                                                                                                                 1
                                                                                                                                              2.54 mm screw terminal connectors 14-position for pico                                                                                                 4
                                                                                                                                              terminal block connectors, 2 circuit can use the non-screw types in a pinch, if you pull that hard on the cable it\'s probably not bad it comes out.   1
-                                                                                                                                             fuse holder, standard fast blow glass tube type                                                                                                        1
+                                                                                                                                             fuse holder, fast blow glass tube type                                                                                                        1
                                                                                                                                              low side mosfet boards                                                                                                                                 2
                                                                                                                                              fuse, 2 amp, fast blow                                                                                                                                 1
                                                                                                                                              potentiometer and knob and retaining nut                                                                                                               1

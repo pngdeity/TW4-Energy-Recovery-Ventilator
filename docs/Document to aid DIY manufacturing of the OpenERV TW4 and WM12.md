@@ -8,7 +8,7 @@ The OpenERV source code includes schematics, STEP/STL files, and a Bill of Mater
 ## Additive Manufacturing (3D Printing) Specifications
 
 ### Material Requirements
-Standard PLA is **not suitable** for these units as it lacks the required structural properties. The following materials are recommended:
+PLA is **not suitable** for these units as it lacks the required structural properties. The following materials are recommended:
 - **Modified PLA (MPLA)**: Matter3D or Jayo brand.
 - **High-Temp PLA**: Polymaker PLA Pro.
 - **ABS**: Acceptable, though prone to warping/curling during large prints.

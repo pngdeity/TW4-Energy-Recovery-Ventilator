@@ -13,7 +13,7 @@ This directory contains all the mechanical and electrical design files for the O
 
 ## Bill of Materials (BOM)
 
-Standardized Bills of Materials are provided in the [OSHWA](https://www.oshwa.org/) recommended CSV format:
+Bills of Materials are provided in the [OSHWA](https://www.oshwa.org/) recommended CSV format:
 - **`BOM_TW4.csv`**: Parts list for a single TW4 module.
 - **`BOM_WM12.csv`**: Parts list for a complete WM12 window-mounted unit (includes 2x modules and adapter hardware).
 
@@ -30,7 +30,7 @@ This repository uses **PrusaSlicer CLI** in a GitHub Action to automatically aud
 The latest report can be found in the `design/` directory as **`MANUFACTURING_REPORT.csv`**.
 
 ### 3D Printing Specifications
-Material and slicer requirements are provided in **`print_specs.json`** files within each sub-directory. These files use a standardized schema to define:
+Material and slicer requirements are provided in **`print_specs.json`** files within each sub-directory. These files use a schema to define:
 - **Recommended Materials**: (e.g., MPLA for high thermal resistance).
 - **Infill Settings**: Specific densities and patterns (e.g., 100% infill for mechanical regions).
 - **Layer Details**: Wall counts and layer heights required for structural integrity.

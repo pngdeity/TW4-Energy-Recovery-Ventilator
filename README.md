@@ -15,12 +15,12 @@ OpenERV is a 87%+ efficiency DIY **Energy Recovery Ventilator (ERV)** system des
 - **High Efficiency**: 87%+ heat recovery efficiency at 60 CFM.
 - **Precision Control**: Integrated PID loops for automated pressure regulation using Sensirion SDP810 sensors.
 - **IoT Enabled**: Built-in WiFi and MQTT support for remote monitoring and automation.
-- **DIY**: Optimized for 3D printing and off-the-shelf components.
+
 - **UDP Synchronization**: Leader/Follower UDP synchronization for multi-module installations.
 
 ## Project Structure
 
-- **`firmware/`**: Standard MicroPython source code for the Raspberry Pi Pico W.
+- **`firmware/`**: MicroPython source code for the Raspberry Pi Pico W.
   - `common/`: Modular core engine, drivers, and safety state machine.
   - `tw4/`, `wm12/`: Model-specific entry points.
 - **`design/`**: Mechanical and electrical design assets.
@@ -59,7 +59,5 @@ This project is a formalized fork of the OpenERV system originally developed by 
 - **Original Website**: [openerv.ca](https://www.openerv.ca)
 - **Licensing**: This project is licensed under **CC BY-NC-SA 4.0**. See [LICENSE](LICENSE) for details.
 
----
 <p align="center">
-  <i>Making ventilation residential ventilation accessible to everyone.</i>
 </p>
