@@ -20,7 +20,7 @@ OpenERV is a high-efficiency, low-cost DIY **Energy Recovery Ventilator (ERV)** 
 
 ## Project Structure
 
-- **`firmware/`**: Hardened MicroPython source code for the Raspberry Pi Pico W.
+- **`firmware/`**: Standard MicroPython source code for the Raspberry Pi Pico W.
   - `common/`: Modular core engine, drivers, and safety state machine.
   - `tw4/`, `wm12/`: Model-specific entry points.
 - **`design/`**: Mechanical and electrical design assets.

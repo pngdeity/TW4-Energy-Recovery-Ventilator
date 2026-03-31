@@ -1,6 +1,5 @@
 # Licensed under CC BY-NC-SA 4.0
-# PhD-Engineered Core Logic Update: High-Reliability & Safety Hardened
-# Cleaned and Refactored by Linus (No side effects, integer math where it counts)
+# Core Logic: Reliability & Safety Improvements
 
 import json
 import time
@@ -22,7 +21,7 @@ class OpenERVCore:
     # Engineering Constants
     THERMAL_LIMIT_C = 50.0  # Safe threshold below MPLA softening point (55C)
     # Using shift-based EMA: filtered = (raw + (filtered * (2^N - 1))) >> N
-    # This is MUCH faster on small MCUs than floating point 0.1
+    # This is efficient on small MCUs
     ADC_FILTER_SHIFT = 3    # N=3 -> approx 0.125 alpha
 
     def __init__(self, model_config):
@@ -49,6 +48,7 @@ class OpenERVCore:
         self.led = Pin("LED", Pin.OUT)
         self.wdt = WDT(timeout=8000)
         
+        # Initialize components
         self.net = NetworkManager(wdt=self.wdt, led=self.led)
         self.i2c = I2C(1, scl=Pin(19), sda=Pin(18), freq=100000)
         self.sensor = SDP810(self.i2c)
@@ -102,9 +102,11 @@ class OpenERVCore:
         return True
 
     def get_conditioned_adc(self):
-        """Integer-based EMA filter to suppress RP2040 ADC noise without floating point overhead."""
+        """Integer-based EMA filter with high-precision accumulation."""
         raw = self.pot.read_u16()
-        self.filtered_pot_raw = (raw + (self.filtered_pot_raw * ((1 << self.ADC_FILTER_SHIFT) - 1))) >> self.ADC_FILTER_SHIFT
+        # Scale up the input to match the high-precision accumulator
+        # filtered = (new_scaled + (old_accum * 7)) / 8
+        self.filtered_pot_raw = (raw + (self.filtered_pot_raw * 7)) >> 3
         return self.filtered_pot_raw / 655.35 # Normalized 0-100
 
     def check_actual_pressure(self):
@@ -177,7 +179,7 @@ class OpenERVCore:
         return time.ticks_diff(time.ticks_ms(), self.delta_from_internal_clock)
 
     def run(self):
-        print("Starting OpenERV Hardened Engine...")
+        print("Starting OpenERV Core Engine...")
         has_config = self.load_persistent_vars()
         
         # Provisioning Check
@@ -208,7 +210,7 @@ class OpenERVCore:
 
             self.fans.update(self.last_ingress_throttle, self.last_egress_throttle)
             
-            # Simplified state-machine for PhD/Linus hardened core
+            # State-machine for core logic
             self.main_perc = self.get_conditioned_adc()
             
             period = self.period_time_calc()
