@@ -9,30 +9,36 @@ The OpenERV source code includes schematics, STEP/STL files, and a Bill of Mater
 
 ### Material Requirements
 Standard PLA is **not suitable** for these units as it lacks the required structural properties. The following materials are recommended:
-- **MPLA**: Matter3D or Jayo brand.
-- **PLA Pro**: Polymaker PLA Pro.
+- **Modified PLA (MPLA)**: Matter3D or Jayo brand.
+- **High-Temp PLA**: Polymaker PLA Pro.
 - **ABS**: Acceptable, though prone to warping/curling during large prints.
 - **PETG**: Not recommended (insufficient rigidity).
 
-**Thermal Limit**: The current polymers utilized start to soften at **55°C (131°F)**. This should be considered for hot climate installations.
+**Thermal Limit**: The current polymers utilized start to soften at **55°C (131°F)**. This must be considered for hot climate installations or direct sunlight exposure.
 
 ### Component-Specific Settings
 - **Noise Splitter**: Requires 100% infill in the pipe interface region for mechanical strength.
-- **Indoor Cover**: This is a large-format part that requires a print bed capable of accommodating its full dimensions.
+- **Indoor Cover**: This part requires a print bed with minimum dimensions of **250mm x 250mm**.
 
 ## Assembly Requirements
 
-### Electronics and Wiring
-- **Soldering**: Required for internal connections. Precision is necessary to avoid short circuits.
-- **Wiring**: High-quality silicone-insulated wire is recommended for flexibility and durability.
-- **PCB**: A transition to a dedicated PCB is in progress. However, point-to-point wiring using screw terminals remains a valid assembly method.
+### Electrical Specifications
+- **Microcontroller**: Raspberry Pi Pico W.
+- **Sensor Interface (I2C ID 1)**:
+  - **SDA**: GP18 (Pin 24)
+  - **SCL**: GP19 (Pin 25)
+- **Power Control**: 10k Potentiometer on **GP28 / ADC2** (Pin 34).
+- **Fan PWM Control**:
+  - **Primary Fans (i0, e0)**: 70,000 Hz.
+  - **Secondary Fans (i1, e1)**: 20,000 Hz.
+- **Logic Level**: 3.3V (The Pico W is not 5V tolerant on GPIO).
 
 ### Hardware and Consumables
-- **Mechanical Fasteners**: Various screws and brackets are required (refer to model-specific BOMs).
+- **Wiring**: High-quality silicone-insulated wire (22-24 AWG) is recommended.
 - **Insulation/Acoustics**: 
   - Sourced from indoor-side insulated ducts.
-  - **Alternative**: Approximately 170 pairs of foam earplugs can be utilized as a high-performance acoustic damping medium.
-- **Heat Exchanger Hats**: Currently require a custom mandrel for fabrication (mandrel design files pending).
+  - **Alternative**: 170 individual foam earplugs can be utilized as a high-performance acoustic damping medium.
+- **Heat Exchanger Hats**: Currently require a custom mandrel for fabrication. (See `design/parts/common/stls/` for related components).
 
 ## DIY Logistics
-Most specialized materials (polypropylene foam, specific fiberglass, electronic components) are typically sold in bulk quantities. DIYers should account for the higher upfront cost of purchasing these materials compared to a pre-assembled kit.
+Specialized materials (polypropylene foam, specific acoustic fiberglass, electronic components) are typically sold in bulk. DIYers should account for the higher upfront cost of purchasing these materials compared to a pre-assembled kit.

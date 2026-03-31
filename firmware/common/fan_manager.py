@@ -15,7 +15,7 @@ class Fan:
     def set_speed(self, spd_prcnt):
         """Set fan speed (0-100%)."""
         spd_prcnt = max(0, min(100, spd_prcnt))
-        if spd_prcnt < 7.5:
+        if spd_prcnt < 17:
             spd_prcnt = 0
             
         duty = int(spd_prcnt * 65530 / 100)

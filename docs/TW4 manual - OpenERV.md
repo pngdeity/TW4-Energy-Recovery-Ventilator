@@ -96,9 +96,10 @@ Parts/packing list:
   exerting force on the body of the plastic connector area, not by
   pulling on the wires.
 
-- If the power level is less than 17 percent, it gets rounded down to
+- If the power level is less than 17% (software cutoff), it gets rounded down to
   zero.
 
+- The software limits the maximum pressure setpoint to **34 PA** for TW4 units to protect the fan motors and maintain efficiency.
 - If the power level is zero percent, the system will try to maintain a
   zero pressure across the heat exchanger i.e. pressure regulation is
   still active This may cause the fan to actually be on slightly if
@@ -119,21 +120,21 @@ level using 2 separate Proportional Integral (PI) control loops, one for
 ingress and one for egress. It stores state of the applicable control
 loop and switches from ingress to egress or egress to ingress then
 restores the state of the applicable control loop every 20-45 seconds
-(half the "period time").
+(half the "Ventilation Cycle duration").
 
 This causes it to compensate for wind, up to reasonable wind levels, but
 the fans are not able to compete with strong winds. There is an
 automatic storm valve add on which can be used in the future to block
 the system in the event of a storm.
 
-The period time is determined partly by the power level, it is longer at
+The Ventilation Cycle duration is determined partly by the power level, it is longer at
 lower power levels to further reduce perceived noise and improve average
 flow (flow is suppressed slightly during the direction reversal).
 
 The leader and follower synchronize their clocks over wifi so the fan
 reversals are synchronized.
 
-They synchronize by the leader broadcasting UDP packets once per cycle,
+They synchronize by the leader broadcasting UDP packets at the start of every Ventilation Cycle (UDP Port 12345),
 containing the clock time and power level. A cycle is a full
 ingress-egress cycle. It therefore takes up to 90 seconds for
 information to propagate. The follower will not turn it's fans on unitl
@@ -452,7 +453,7 @@ saw.
 
 ## Electrical supply
 
-You need to decide which kind you want, I recommend the wall wart at
+You need to decide which kind you want, It is recommended to the wall wart at
 first and you can always hard wire the electricity later. You can even
 take a power supply of the type that can be used for hard wiring and
 just put a plug on it and use that so you don't end up with an extra
@@ -672,10 +673,10 @@ else. No decimals right now are allowed.
 **\"ADAFRUIT_IO_FEEDNAME_publish\" : b\'OpenERV_TW4-1_status\',**
 
 This channel is useful to monitor the operation of the device. Right now
-the millisecond clock time of the device is published once per cycle to
+the millisecond clock time of the device is published at the start of every Ventilation Cycle (UDP Port 12345) to
 this channel.
 
-I recommend just using Adafuit IO if you are just getting started, in
+It is recommended to just using Adafuit IO if you are just getting started, in
 that case you only need to modify the username and enter your IO key and
 things should work fine. You can also login to their website and view
 the feed, enter test data and so on, which will help you get things

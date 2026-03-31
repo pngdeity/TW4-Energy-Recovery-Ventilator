@@ -136,7 +136,6 @@ https://docs.google.com/document/d/1owr_riiIEUlUa45al_b7uIGe7IZfdDO1xxAAJC9aKUU/
   fans inside the pipe is still an option if anyone needs the filter or
   storm valve modules while also mounting everything in a window.
 
-- There are many strange and terrible permutations and reorganizations
   of components that are possible, especially with the wireless features
   of the TW4, you can put the two halves in different windows in
   different rooms etc, but I have not experimented much with this.
