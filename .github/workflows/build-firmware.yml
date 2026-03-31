@@ -9,6 +9,12 @@ on:
       - 'firmware/**'
       - '.github/workflows/build-firmware.yml'
   workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a GitHub Release?'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -131,8 +137,13 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: |
+      always() && 
+      (startsWith(github.ref, 'refs/tags/v') || github.event.inputs.create_release == 'true')
     steps:
+      - name: Checkout OpenERV (for BOMs)
+        uses: actions/checkout@v6
+
       - name: Download all artifacts
         uses: actions/download-artifact@v8
 
@@ -142,4 +153,8 @@ jobs:
           files: |
             OpenERV_tw4_Firmware/*.uf2
             OpenERV_wm12_Firmware/*.uf2
+            design/BOM_*.csv
+            design/MANUFACTURING_REPORT.csv
           generate_release_notes: true
+          draft: false
+          prerelease: false
