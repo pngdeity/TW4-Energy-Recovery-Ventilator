@@ -45,6 +45,14 @@ After flashing, you must configure your local environment:
 2. Copy it to the root of your Pico's filesystem as `persistent_vars.json`.
 3. Edit the file to include your WiFi credentials, model ID, and optional Adafruit IO keys.
 
+## Documentation & Roadmap
+
+Detailed manuals and assembly instructions:
+- [DIY Manufacturing Guide](./docs/Document%20to%20aid%20DIY%20manufacturing%20of%20the%20OpenERV%20TW4%20and%20WM12.md)
+- [TW4 Manual](./docs/TW4%20manual%20-%20OpenERV.md)
+- [WM12 Manual](./docs/OpenERV%20WM12%20manual.md)
+- [v1.0 Roadmap](./ROADMAP.md)
+
 ## Original Project & Attribution
 
 This project is a formalized fork of the OpenERV system originally developed by **Anthony Douglas**.
