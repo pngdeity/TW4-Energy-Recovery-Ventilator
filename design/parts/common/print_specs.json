@@ -1,0 +1,87 @@
+{
+  "project": "OpenERV",
+  "recommended_material": "Modified PLA (MPLA) or High-Temperature PLA (e.g., Polymaker PLA Pro)",
+  "thermal_limit": "55C (131F)",
+  "global_settings": {
+    "layer_height": "0.2mm - 0.28mm",
+    "wall_count": 3,
+    "top_layers": 4,
+    "bottom_layers": 4,
+    "infill_type": "Grid or Gyroid",
+    "infill_percentage": 20
+  },
+  "parts": {
+    "combi_hood": {
+      "infill_percentage": 20,
+      "supports": "Required (bed only)",
+      "notes": "Ensure good bed adhesion for large footprint."
+    },
+    "fiberglass_grid": {
+      "infill_percentage": 100,
+      "top_layers": 0,
+      "bottom_layers": 0,
+      "notes": "Thin structural part, 100% infill recommended for rigidity."
+    },
+    "filter_clamp": {
+      "infill_percentage": 40,
+      "notes": "Mechanical clamping part, higher infill for strength."
+    },
+    "filter_seat": {
+      "infill_percentage": 20
+    },
+    "hat_seat": {
+      "infill_percentage": 20
+    },
+    "indoor_plate": {
+      "infill_percentage": 20,
+      "notes": "Large part, verify bed dimensions (min 250x250mm preferred)."
+    },
+    "interior_cover": {
+      "infill_percentage": 15,
+      "notes": "Large part, 220mm bed limit (tight fit)."
+    },
+    "noise_splitter": {
+      "infill_percentage": 20,
+      "custom_regions": [
+        {
+          "region": "Pipe Interface",
+          "infill_percentage": 100,
+          "notes": "100% infill required in the region where it goes around the pipe for mechanical strength."
+        }
+      ]
+    },
+    "outdoor_cover": {
+      "infill_percentage": 20,
+      "notes": "Large format part, requires 250mm+ bed."
+    },
+    "outdoor_plate": {
+      "infill_percentage": 20
+    },
+    "pipe_extension": {
+      "infill_percentage": 20
+    },
+    "pot_mount": {
+      "infill_percentage": 40
+    },
+    "pot": {
+      "infill_percentage": 20
+    },
+    "regen": {
+      "infill_type": "Lines",
+      "infill_percentage": "Custom",
+      "line_spacing": "2.5mm",
+      "line_width": "0.45mm",
+      "top_layers": 0,
+      "bottom_layers": 0,
+      "notes": "Critical heat exchanger part. Must be printed with parallel channels (no top/bottom). Use Cura 'Lines' pattern."
+    },
+    "standard_filter_adapter_plate": {
+      "infill_percentage": 20
+    }
+  },
+  "ambiguities": [
+    "Exact support blockers/enforcers for complex geometry not specified.",
+    "Optimal printing orientation for aerodynamic surfaces (e.g., noise splitter) is inferred but not confirmed.",
+    "Fan retention clamp screw hole tolerances depend on individual printer calibration."
+  ]
+}

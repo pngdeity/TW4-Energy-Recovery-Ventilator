@@ -21,6 +21,12 @@ These files include component names, quantities, technical descriptions, and sug
 
 ## Manufacturing
 
+### 3D Printing Specifications
+Detailed material and slicer requirements are provided in **`print_specs.json`** files within each sub-directory. These files use a standardized schema to define:
+- **Recommended Materials**: (e.g., MPLA for high thermal resistance).
+- **Infill Settings**: Specific densities and patterns (e.g., 100% infill for mechanical regions).
+- **Layer Details**: Wall counts and layer heights required for structural integrity.
+
 For detailed assembly and manufacturing instructions, please refer to the documentation in the root `docs/` directory:
 - [DIY Manufacturing Guide](../docs/Document%20to%20aid%20DIY%20manufacturing%20of%20the%20OpenERV%20TW4%20and%20WM12.md)
 - [TW4 Manual](../docs/TW4%20manual%20-%20OpenERV.md)
