@@ -47,7 +47,7 @@ https://docs.google.com/document/d/1owr_riiIEUlUa45al_b7uIGe7IZfdDO1xxAAJC9aKUU/
   There can only be so many milligrams of stuff adsorbed by the silica
   gel, and eventually it must all come out, or stay stuck in there. The
   smell should dissipate after a few days of operation, giving you
-  perfectly clean outdoor air from then on. The material used in
+  clean outdoor air from then on. The material used in
   manufacture is non-toxic bio-source PLA, silica gel and isopropyl
   alcohol. There are no toxic substances used.
 
@@ -369,7 +369,7 @@ window securely.
   making noise when they collapse, this is a workaround for now. The
   thinner the mylar the better the anti noise performance so it is
   pretty close to the limit. The slight dent formation is otherwise
-  perfectly harmless.
+  safe.
 
 # Handling/window installation
 

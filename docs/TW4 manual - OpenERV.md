@@ -152,7 +152,7 @@ the configuration file. The devices ship by default with this already
 configured.
 
 The devices work as is by themselves out of the box, but if you want to
-connect to wifi for more advanced features, you need to edit the
+connect to wifi for additional features, you need to edit the
 configuration file using a program called Thonny running on a desktop or
 laptop, and a usb-micro cable.
 
@@ -562,7 +562,7 @@ Procedure:
 
 # Initial setup
 
-The devices work out of the box, but if you want to use more advanced
+The devices work out of the box, but if you want to use additional
 features, you need to edit the configuration file using a program called
 Thonny and a usb-micro cable. See below for details on how to do that.
 
