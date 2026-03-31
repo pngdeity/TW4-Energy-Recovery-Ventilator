@@ -14,11 +14,39 @@ permissions:
   contents: write
 
 jobs:
+  check_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      tw4: ${{ steps.filter.outputs.tw4 }}
+      wm12: ${{ steps.filter.outputs.wm12 }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            tw4:
+              - 'firmware/tw4/**'
+              - 'firmware/common/**'
+              - '.github/workflows/build-firmware.yml'
+              - 'firmware/manifest_tw4.py'
+            wm12:
+              - 'firmware/wm12/**'
+              - 'firmware/common/**'
+              - '.github/workflows/build-firmware.yml'
+              - 'firmware/manifest_wm12.py'
+
   build:
+    needs: check_changes
     runs-on: ubuntu-latest
     strategy:
       matrix:
         model: [tw4, wm12]
+    # Only run if relevant files changed, OR it is a tag, OR it was manually triggered
+    if: |
+      needs.check_changes.outputs[matrix.model] == 'true' || 
+      startsWith(github.ref, 'refs/tags/v') || 
+      github.event_name == 'workflow_dispatch'
     
     steps:
       - name: Checkout OpenERV
@@ -31,7 +59,23 @@ jobs:
         with:
           repository: micropython/micropython
           path: micropython
-          fetch-depth: 0 # Ensure we get all tags/history for versioning
+          ref: v1.24.1 # Pin to a stable version for cache reliability
+
+      - name: Cache mpy-cross
+        id: cache-mpy-cross
+        uses: actions/cache@v4
+        with:
+          path: micropython/mpy-cross/build/mpy-cross
+          key: ${{ runner.os }}-mpy-cross-v1.24.1
+
+      - name: Cache MicroPython Submodules
+        id: cache-submodules
+        uses: actions/cache@v4
+        with:
+          path: |
+            micropython/lib
+            micropython/ports/rp2/build-RPI_PICO_W/_deps
+          key: ${{ runner.os }}-micropython-submodules-v1.24.1-${{ hashFiles('openerv/.github/workflows/build-firmware.yml') }}
 
       - name: Install ARM GCC
         uses: carlosperate/arm-none-eabi-gcc-action@v1
@@ -39,13 +83,14 @@ jobs:
           release: 'latest'
 
       - name: Install Python dependencies
-        run: |
-          python3 -m pip install pyelftools
+        run: python3 -m pip install pyelftools
 
       - name: Build mpy-cross
+        if: steps.cache-mpy-cross.outputs.cache-hit != 'true'
         run: make -C micropython/mpy-cross
 
       - name: Initialize MicroPython submodules
+        if: steps.cache-submodules.outputs.cache-hit != 'true'
         run: |
           cd micropython/ports/rp2
           make BOARD=RPI_PICO_W submodules
