@@ -1,10 +1,22 @@
-The clamps are key type 6 inch diameter hose clamps
+# WM12 Technical Specification: Hardware Replacement
 
-The screws are ¾ inch number 2 I think robertson (green).
+This document lists the standard hardware components required for the WM12 window adapter.
 
-The metal brackets are just random 1.5 inch brackets or something from
-the hardware store.
+## Mechanical Components
 
-The timber is just a 2x2.
+### Clamps
+- **Type**: Key-type hose clamps.
+- **Diameter**: 6 inches (approx. 152 mm).
 
-The foam plate is polypropylene foam, available as a packaging material.
+### Fasteners
+- **Screws**: 3/4 inch, Number 2 Robertson (Square Drive, Green).
+
+### Brackets
+- **Type**: Standard 1.5-inch metal brackets (generic hardware store stock).
+
+### Structural Timber
+- **Dimension**: 2x2 nominal (actual approx. 1.5" x 1.5" or 38mm x 38mm).
+
+### Sealing Medium
+- **Material**: Polypropylene (PP) foam plate.
+- **Source**: Commonly used as industrial packaging material.

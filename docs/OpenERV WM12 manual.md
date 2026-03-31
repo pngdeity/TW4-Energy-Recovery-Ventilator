@@ -1,6 +1,6 @@
 # Introduction:
 
-The WM12 is essentially just two TW4 energy recovery ventilator (ERV)
+The WM12 is consists of two TW4 energy recovery ventilator (ERV)
 modules, with a few electronic parts missing to reduce the cost, and a
 foam adapter.
 
