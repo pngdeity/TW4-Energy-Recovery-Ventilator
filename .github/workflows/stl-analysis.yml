@@ -1,0 +1,36 @@
+name: STL Manufacturing Analysis
+
+on:
+  push:
+    branches: [ main, feature/technical-audit-fixes ]
+    paths:
+      - 'design/parts/**/*.stl'
+      - 'design/config/*.ini'
+      - 'scripts/analyze_stls.py'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'design/parts/**/*.stl'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    steps:
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm prusa-slicer python
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run STL Analysis
+        run: python scripts/analyze_stls.py
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: manufacturing-report
+          path: design/MANUFACTURING_REPORT.csv

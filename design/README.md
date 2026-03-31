@@ -21,6 +21,14 @@ These files include component names, quantities, technical descriptions, and sug
 
 ## Manufacturing
 
+### Automated Manufacturing Reports
+This repository uses **PrusaSlicer CLI** in a GitHub Action to automatically audit every 3D model change. On every push to the `main` branch, a report is generated containing:
+- **Print Time Estimates**: Calculated using the project's manufacturing profile.
+- **Material Usage**: Estimated weight in grams.
+- **Physical Dimensions**: Precise bounding box measurements.
+
+The latest report can be found in the `design/` directory as **`MANUFACTURING_REPORT.csv`**.
+
 ### 3D Printing Specifications
 Detailed material and slicer requirements are provided in **`print_specs.json`** files within each sub-directory. These files use a standardized schema to define:
 - **Recommended Materials**: (e.g., MPLA for high thermal resistance).
