@@ -5,6 +5,9 @@ on:
     branches: [ main ]
     tags:
       - 'v*'
+    paths:
+      - 'firmware/**'
+      - '.github/workflows/build-firmware.yml'
   workflow_dispatch:
 
 permissions:
