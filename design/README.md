@@ -11,6 +11,14 @@ This directory contains all the mechanical and electrical design files for the O
 - **`schematics/`**: Electrical schematics, PCB layouts, and sensor pinouts.
   - **`source/`**: Raw EasyEDA JSON source files.
 
+## Bill of Materials (BOM)
+
+Standardized Bills of Materials are provided in the [OSHWA](https://www.oshwa.org/) recommended CSV format:
+- **`BOM_TW4.csv`**: Comprehensive parts list for a single TW4 module.
+- **`BOM_WM12.csv`**: Parts list for a complete WM12 window-mounted unit (includes 2x modules and adapter hardware).
+
+These files include component names, quantities, technical descriptions, and suggested sourcing information (e.g., LCSC/DigiKey part numbers where applicable).
+
 ## Manufacturing
 
 For detailed assembly and manufacturing instructions, please refer to the documentation in the root `docs/` directory:

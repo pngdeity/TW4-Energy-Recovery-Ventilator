@@ -1,0 +1,27 @@
+Index,Designator,Quantity,Name,Description,Manufacturer,Part Number,Supplier,Supplier Part Number,Footprint,Notes
+1,,16,Regenerator Slices,Coated or uncoated heat exchanger slices,,,OpenERV,,Custom,8 per module
+2,,1,Regenerator Tape,High-temp tape (Tuck Tape recommended),,,Local Hardware Store,,N/A,
+3,,2,Indoor Cover,3D Printed Cover (MPLA/PLA Pro),,,OpenERV,,Custom,250x250mm bed required
+4,,2,Fiberglass Grid,3D Printed Grid,,,OpenERV,,Custom,
+5,,1,Potentiometer Mount,3D Printed Mount,,,OpenERV,,Custom,Only 1 needed for control
+6,,2,Indoor Plate,3D Printed Plate,,,OpenERV,,Custom,
+7,,2,Noise Splitter Body,3D Printed Main Body,,,OpenERV,,Custom,
+8,,2,Pipe Extension,3D Printed Inner Pipe Extension,,,OpenERV,,Custom,
+9,,2,Hat Seat,3D Printed Hat Seat,,,OpenERV,,Custom,
+10,,2,Flow Straightener,3D Printed Flow Straightener,,,OpenERV,,Custom,
+11,,2,Fan Retention Clamp,3D Printed Clamp,,,OpenERV,,Custom,
+12,,4,Fan,12V DC Fan - corners trimmed,NMB Technologies,11925SE-12R-FT-DW,DigiKey,P12345-ND,120mm,
+13,U1,1,Microcontroller,Raspberry Pi Pico W,Raspberry Pi,Pico W,DigiKey,2122-SC0918-ND,Module,Single unit controls both modules
+14,U2,1,Pressure Sensor,Differential Pressure Sensor 125Pa,Sensirion,SDP810-125PA,DigiKey,1649-1063-ND,Module,Only 1 sensor used in WM12
+15,,1,Voltage Regulator,Adjustable Buck Regulator (1A+),,,Amazon/Generic,,Module,Set to 5V
+16,,1,Power Supply,12V 2A DC Power Supply,,,Amazon/Generic,,N/A,
+17,,4,MOSFET Boards,Low-side MOSFET control boards,,,Amazon/Generic,,Module,4 total (1 per fan)
+18,R1,1,Potentiometer,10k Linear Potentiometer with Knob,,,Local/DigiKey,,N/A,
+19,,1,Foam Plate,Polypropylene foam packaging material,,,Local/Amazon,,N/A,Window adapter medium
+20,,1,Structural Timber,2x2 Nominal Timber (8ft length),,,Local Hardware Store,,N/A,Window frame support
+21,,4,Metal Brackets,1.5 inch standard metal brackets,,,Local Hardware Store,,N/A,
+22,,4,Hose Clamps,6 inch diameter key-type hose clamps,,,Local Hardware Store,,6 inch,
+23,,48,M3 Screws,12mm long self-tapping SS screws,,,Local Hardware Store,,M3,
+24,,1,Acoustic Damping,Acoustic fiberglass or 340 foam earplugs,,,Local/Amazon,,N/A,
+25,,2,Pipe,SDR35 PVC Pipe,,,Local Hardware Store,,4 inch,
+26,,1,Window Film,50-75 micron BOPET (Mylar) film,,,Local/Amazon,,N/A,

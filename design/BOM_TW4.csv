@@ -1,0 +1,32 @@
+Index,Designator,Quantity,Name,Description,Manufacturer,Part Number,Supplier,Supplier Part Number,Footprint,Notes
+1,,8,Regenerator Slices,Coated or uncoated heat exchanger slices,,,OpenERV,,Custom,
+2,,1,Regenerator Tape,High-temp tape (Tuck Tape recommended),,,Local Hardware Store,,N/A,
+3,,1,Indoor Cover,3D Printed Cover (MPLA/PLA Pro),,,OpenERV,,Custom,250x250mm bed required
+4,,1,Fiberglass Grid,3D Printed Grid,,,OpenERV,,Custom,
+5,,1,Potentiometer Mount,3D Printed Mount,,,OpenERV,,Custom,
+6,,1,Indoor Plate,3D Printed Plate,,,OpenERV,,Custom,
+7,,1,Noise Splitter Body,3D Printed Main Body,,,OpenERV,,Custom,
+8,,1,Pipe Extension,3D Printed Inner Pipe Extension,,,OpenERV,,Custom,
+9,,1,Hat Seat,3D Printed Hat Seat,,,OpenERV,,Custom,
+10,,1,Flow Straightener,3D Printed Flow Straightener,,,OpenERV,,Custom,
+11,,1,Fan Retention Clamp,3D Printed Clamp,,,OpenERV,,Custom,
+12,,2,Fan,12V DC Fan - corners trimmed,NMB Technologies,11925SE-12R-FT-DW,DigiKey,P12345-ND,120mm,
+13,,2,Washers,12mm washers for M3 screws,,,Local Hardware Store,,M3,
+14,,2,M4 Bolts,55mm long M4 bolts,,,Local Hardware Store,,M4,
+15,,2,M4 Lock Nuts,Lock nuts for splitter clamp,,,Local Hardware Store,,M4,
+16,,24,M3 Screws,12mm long self-tapping SS screws,,,Local Hardware Store,,M3,
+17,,2,M3 Screws (Long),25mm long self-tapping M3 screws,,,Local Hardware Store,,M3,
+18,,2,M2 Screws,12mm long self-tapping SS screws,,,Local Hardware Store,,M2,For Pico mounting
+19,U1,1,Microcontroller,Raspberry Pi Pico W,Raspberry Pi,Pico W,DigiKey,2122-SC0918-ND,Module,
+20,U2,1,Pressure Sensor,Differential Pressure Sensor 125Pa,Sensirion,SDP810-125PA,DigiKey,1649-1063-ND,Module,
+21,,1,Acoustic Damping,Acoustic fiberglass or 170 foam earplugs,,,Local/Amazon,,N/A,
+22,,1,Voltage Regulator,Adjustable Buck Regulator (1A+ for Servo/Pico),,,Amazon/Generic,,Module,Set to 5V
+23,,1,Power Supply,12V 2A DC Power Supply,,,Amazon/Generic,,N/A,
+24,,4,Terminal Connectors,2.54mm 14-position screw terminals,,,DigiKey,,DIP,For Pico
+25,F1,1,Fuse Holder,Standard glass tube fuse holder,,,Local/DigiKey,,N/A,
+26,F1,1,Fuse,2A Fast Blow Fuse,,,Local/DigiKey,,N/A,
+27,,2,MOSFET Boards,Low-side MOSFET control boards,,,Amazon/Generic,,Module,
+28,R1,1,Potentiometer,10k Linear Potentiometer with Knob,,,Local/DigiKey,,N/A,
+29,,2,Fan Connectors,3.81mm Pluggable terminal blocks (M/F pairs),,,DigiKey,,3.81mm,
+30,,1,Pipe,SDR35 PVC Pipe,,,Local Hardware Store,,4 inch,
+31,,1,Window Film,50-75 micron BOPET (Mylar) film,,,Local/Amazon,,N/A,
