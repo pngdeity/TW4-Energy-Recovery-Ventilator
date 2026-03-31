@@ -1,0 +1,22 @@
+%Open Know-How Manifest 1.0
+---
+title: OpenERV TW4 and WM12
+description: A high-efficiency, low-cost DIY Energy Recovery Ventilator (ERV) designed for residential ventilation. Features automated pressure regulation, 87%+ heat recovery efficiency, and an open hardware/software architecture based on the Raspberry Pi Pico W.
+license: CC-BY-NC-SA-4.0
+manifest-author: pngdeity
+project-link: https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator
+documentation-home: https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/tree/main/docs
+keywords:
+  - open hardware
+  - energy recovery ventilator
+  - erv
+  - hvac
+  - heat exchange
+  - micropython
+  - raspberry pi pico
+  - sustainability
+contact: https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/issues
+version: 1.0.0
+standard-compliance: Open Know-How v1.0
+image: https://github.com/pngdeity/TW4-Energy-Recovery-Ventilator/blob/main/design/schematics/pcb_schematic_v2.png
+derivative-of: https://openerv.org
