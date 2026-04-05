@@ -13,6 +13,8 @@ from umqtt.robust import MQTTClient
 import uping
 
 from sdp810 import SDP810
+from scd4x import SCD4X
+from sync_manager import SyncManager
 from network_manager import NetworkManager
 from fan_manager import FanManager
 from provisioning import ProvisioningManager
@@ -20,6 +22,11 @@ from provisioning import ProvisioningManager
 class OpenERVCore:
     # Engineering Constants
     THERMAL_LIMIT_C = 50.0  # Safe threshold below MPLA softening point (55C)
+    CO2_BOOST_THRESHOLD = 800 # ppm - Start ramping up above this
+    CO2_MAX_THRESHOLD = 1200  # ppm - Forced Max speed
+    FROST_LIMIT_C = -5.0      # Trigger defrost below this
+    DEFROST_DURATION_S = 300  # 5 minutes of exhaust to melt core
+    SYNC_INTERVAL_S = 10      # How often to send sync (UDP)
     # Using shift-based EMA: filtered = (raw + (filtered * (2^N - 1))) >> N
     # This is efficient on small MCUs
     ADC_FILTER_SHIFT = 3    # N=3 -> approx 0.125 alpha
@@ -42,6 +49,7 @@ class OpenERVCore:
             "max_pressure": 30,
             "pressure_ratioa": 1.0,
             "pressure_ratiob": 1.0,
+            "enable_co2": False,
         }
         self.config.update(model_config)
         
@@ -52,6 +60,11 @@ class OpenERVCore:
         self.net = NetworkManager(wdt=self.wdt, led=self.led)
         self.i2c = I2C(1, scl=Pin(19), sda=Pin(18), freq=100000)
         self.sensor = SDP810(self.i2c)
+        self.co2_sensor = None
+        if self.config.get('enable_co2'):
+            self.co2_sensor = SCD4X(self.i2c)
+        
+        self.sync = SyncManager(self.config, wdt=self.wdt)
         self.fans = FanManager()
         self.prov = ProvisioningManager(self.net)
         
@@ -74,7 +87,12 @@ class OpenERVCore:
         self.read_fail_strikes = 0
         self.oldpressure = 0
         self.current_temp = 0.0
+        self.current_co2 = 400
+        self.sync_pressure_offset = 0.0
+        self.last_sync_time = 0
         self.thermal_shutdown_active = False
+        self.defrost_active = False
+        self.last_defrost_time = 0
 
     def load_persistent_vars(self):
         filename = "persistent_vars.json"
@@ -98,6 +116,24 @@ class OpenERVCore:
                 self.led.on()
             return False
         
+        # 2. Frost Protection (Defrost Mode)
+        # Trigger if temp is below limit and it's been long enough since last defrost
+        if self.current_temp < self.FROST_LIMIT_C and not self.defrost_active:
+            if time.time() - self.last_defrost_time > 1800: # Max once every 30 mins
+                print(f"Frost detected ({self.current_temp}C). Entering Defrost Mode...")
+                self.defrost_active = True
+                self.last_defrost_time = time.time()
+        
+        # 3. CO2 Monitoring (Optional)
+        if self.co2_sensor:
+            co2, _, _ = self.co2_sensor.get_reading()
+            if co2:
+                self.current_co2 = co2
+                if self.current_co2 > self.CO2_MAX_THRESHOLD:
+                    print(f"High CO2 ({self.current_co2} ppm). Boosting to MAX.")
+                elif self.current_co2 > self.CO2_BOOST_THRESHOLD:
+                    print(f"CO2 Rising ({self.current_co2} ppm). Ramping up.")
+
         self.thermal_shutdown_active = False
         return True
 
@@ -108,6 +144,26 @@ class OpenERVCore:
         # filtered = (new_scaled + (old_accum * 7)) / 8
         self.filtered_pot_raw = (raw + (self.filtered_pot_raw * 7)) >> 3
         return self.filtered_pot_raw / 655.35 # Normalized 0-100
+
+    def get_effective_power(self):
+        """Adjusts pot value based on CO2 levels (Demand Controlled Ventilation)."""
+        base_power = self.get_conditioned_adc()
+        
+        if not self.co2_sensor:
+            return base_power
+            
+        # If CO2 is critical, force MAX speed
+        if self.current_co2 > self.CO2_MAX_THRESHOLD:
+            return 100.0
+            
+        # If CO2 is rising, ramp up power proportionally
+        if self.current_co2 > self.CO2_BOOST_THRESHOLD:
+            # Linear ramp from base_power to 100 between thresholds
+            range = self.CO2_MAX_THRESHOLD - self.CO2_BOOST_THRESHOLD
+            extra = (self.current_co2 - self.CO2_BOOST_THRESHOLD) / range
+            return min(100.0, base_power + (extra * (100.0 - base_power)))
+            
+        return base_power
 
     def check_actual_pressure(self):
         correction_ratio = 3.45
@@ -178,6 +234,26 @@ class OpenERVCore:
             return time.ticks_ms()
         return time.ticks_diff(time.ticks_ms(), self.delta_from_internal_clock)
 
+    def handle_sync(self):
+        """Manages UDP sync timing and pressure offsets."""
+        if self.config['leader_or_follower'] == "leader":
+            if time.time() - self.last_sync_time > self.SYNC_INTERVAL_S:
+                # Leader: Calculate pressure offset to maintain 0 Pa
+                # If pressure is positive, Follower needs to exhaust more (offset < 0)
+                # If pressure is negative, Follower needs to supply more (offset > 0)
+                # This is a simple proportional correction for now
+                self.sync_pressure_offset = -0.5 * self.oldpressure
+                self.sync.send_sync(time.ticks_ms(), self.sync_pressure_offset)
+                self.last_sync_time = time.time()
+                print(f"Sync sent: Offset={self.sync_pressure_offset}")
+        else:
+            # Follower: Listen for sync
+            new_ticks, new_offset = self.sync.receive_sync()
+            if new_ticks is not None:
+                self.delta_from_internal_clock = time.ticks_diff(time.ticks_ms(), new_ticks)
+                self.sync_pressure_offset = new_offset
+                print(f"Sync received: Offset={self.sync_pressure_offset}")
+
     def run(self):
         print("Starting OpenERV Core Engine...")
         has_config = self.load_persistent_vars()
@@ -208,18 +284,42 @@ class OpenERVCore:
                 time.sleep(5)
                 continue
 
+            self.handle_sync()
             self.fans.update(self.last_ingress_throttle, self.last_egress_throttle)
             
-            # State-machine for core logic
-            self.main_perc = self.get_conditioned_adc()
+            # 1. Defrost Logic (Exhaust-only to melt ice)
+            if self.defrost_active:
+                print("DEFROST START: Running exhaust-only for 5 minutes.")
+                cp_egress = self.percent_to_pressure(100) # Full power exhaust
+                self.pid_egress.setpoint = -cp_egress
+                self.pid_egress.set_auto_mode(True, last_output=self.last_egress_throttle)
+                
+                start_defrost = time.time()
+                while time.time() - start_defrost < self.DEFROST_DURATION_S:
+                    self.wdt.feed()
+                    self.last_egress_throttle = self.pid_egress(self.check_actual_pressure())
+                    self.fans.update(0, self.last_egress_throttle)
+                    time.sleep(0.1)
+                
+                self.pid_egress.set_auto_mode(False)
+                self.defrost_active = False
+                print("DEFROST COMPLETE: Returning to normal cycle.")
+                continue
+
+            # 2. Normal State-machine logic
+            self.main_perc = self.get_effective_power()
             
             period = self.period_time_calc()
             
             # Ingress Phase
             cp_ingress = self.check_cp_ingress()
+            if self.config['leader_or_follower'] == "follower":
+                cp_ingress += self.sync_pressure_offset
+            
             self.pid_ingress.setpoint = cp_ingress
             self.pid_ingress.set_auto_mode(True, last_output=self.last_ingress_throttle)
             while (self.ticks_ms_synced() % period) < period / 2:
+                self.handle_sync() # Keep sync active during loops
                 self.last_ingress_throttle = self.pid_ingress(self.check_actual_pressure())
                 self.wdt.feed()
                 time.sleep(0.1)
@@ -227,9 +327,13 @@ class OpenERVCore:
 
             # Egress Phase
             cp_egress = self.check_cp_egress()
+            if self.config['leader_or_follower'] == "follower":
+                cp_egress += self.sync_pressure_offset
+            
             self.pid_egress.setpoint = cp_egress
             self.pid_egress.set_auto_mode(True, last_output=self.last_egress_throttle)
             while (self.ticks_ms_synced() % period) >= period / 2:
+                self.handle_sync() # Keep sync active during loops
                 self.last_egress_throttle = self.pid_egress(self.check_actual_pressure())
                 self.wdt.feed()
                 time.sleep(0.1)
