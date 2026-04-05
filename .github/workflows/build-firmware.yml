@@ -80,7 +80,7 @@ jobs:
           path: |
             micropython/lib
             micropython/ports/rp2/build-RPI_PICO_W/_deps
-          key: ${{ runner.os }}-micropython-submodules-v1.24.1-${{ hashFiles('openerv/.github/workflows/build-firmware.yml') }}
+          key: ${{ runner.os }}-micropython-submodules-v1.24.1
 
       - name: Initialize MicroPython submodules
         if: steps.cache-submodules.outputs.cache-hit != 'true'
@@ -139,7 +139,7 @@ jobs:
           path: |
             micropython/lib
             micropython/ports/rp2/build-RPI_PICO_W/_deps
-          key: ${{ runner.os }}-micropython-submodules-v1.24.1-${{ hashFiles('openerv/.github/workflows/build-firmware.yml') }}
+          key: ${{ runner.os }}-micropython-submodules-v1.24.1
           fail-on-cache-miss: true
 
       - name: Install ARM GCC
