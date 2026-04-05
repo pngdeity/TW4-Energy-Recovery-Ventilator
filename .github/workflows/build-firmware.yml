@@ -53,12 +53,14 @@ jobs:
     if: needs.check_changes.outputs.any_firmware == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout MicroPython
+      - name: Checkout MicroPython with submodules
         uses: actions/checkout@v6
         with:
           repository: micropython/micropython
           path: micropython
           ref: v1.24.1
+          submodules: 'true'
+          fetch-depth: 1
 
       - name: Cache mpy-cross
         id: cache-mpy-cross
@@ -83,8 +85,8 @@ jobs:
       - name: Initialize MicroPython submodules
         if: steps.cache-submodules.outputs.cache-hit != 'true'
         run: |
-          cd micropython
-          git submodule update --init --recursive lib/pico-sdk lib/tinyusb lib/mbedtls lib/lwip lib/cyw43-driver
+          cd micropython/ports/rp2
+          make BOARD=RPI_PICO_W submodules
 
   build:
     needs: [check_changes, prepare_micropython]
@@ -113,13 +115,14 @@ jobs:
         with:
           path: openerv
 
-      - name: Checkout MicroPython
+      - name: Checkout MicroPython (Light)
         if: steps.skip_check.outputs.should_run == 'true'
         uses: actions/checkout@v6
         with:
           repository: micropython/micropython
           path: micropython
           ref: v1.24.1
+          fetch-depth: 1
 
       - name: Restore mpy-cross
         if: steps.skip_check.outputs.should_run == 'true'
