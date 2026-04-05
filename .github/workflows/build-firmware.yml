@@ -13,6 +13,8 @@ on:
     paths:
       - 'firmware/**'
       - '.github/workflows/build-firmware.yml'
+  schedule:
+    - cron: '0 0 * * *' # Every night at midnight
   workflow_dispatch:
     inputs:
       create_release:

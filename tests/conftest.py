@@ -28,6 +28,16 @@ sys.modules['umqtt.robust'] = m_umqtt_robust
 
 sys.modules['uping'] = types.ModuleType('uping')
 
+# Mock ubinascii
+m_ubinascii = types.ModuleType('ubinascii')
+m_ubinascii.hexlify = lambda x: b'aabbccddeeff'
+sys.modules['ubinascii'] = m_ubinascii
+
+# Enhance machine mock if not already done via file replacement
+# (but conftest here does manual sys.modules sometimes)
+import machine
+machine.unique_id = lambda: b'\xaa\xbb\xcc\xdd\xee\xff'
+
 # Mock time for MicroPython specifics AND CPython compatibility
 m_time = types.ModuleType('time')
 m_time.sleep = real_time.sleep

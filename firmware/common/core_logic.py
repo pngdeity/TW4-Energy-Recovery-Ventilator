@@ -18,6 +18,7 @@ from sync_manager import SyncManager
 from network_manager import NetworkManager
 from fan_manager import FanManager
 from provisioning import ProvisioningManager
+from discovery import MQTTDiscovery
 
 class OpenERVCore:
     # Engineering Constants
@@ -56,6 +57,11 @@ class OpenERVCore:
         self.led = Pin("LED", Pin.OUT)
         self.wdt = WDT(timeout=8000)
         
+        # Phase 4 States
+        self.hvac_mode = "heat_cool" # heat_cool=ERV, fan_only=Free Cooling, off=Shutdown
+        self.hvac_fan_mode = "medium"
+        self.target_power = 50.0
+        
         # Initialize components
         self.net = NetworkManager(wdt=self.wdt, led=self.led)
         self.i2c = I2C(1, scl=Pin(19), sda=Pin(18), freq=100000)
@@ -78,6 +84,7 @@ class OpenERVCore:
         self.mqtt_perc = 40
         self.main_perc = 50
         self.client = None
+        self.discovery = None
         self.mqtt_connected = 0
         self.mqtt_feedname_publish = None
         
@@ -203,10 +210,23 @@ class OpenERVCore:
         return -1 * self.percent_to_pressure(self.main_perc) / self.config['pressure_ratioa']
 
     def mqtt_callback(self, topic, msg):
+        topic_str = topic.decode()
+        msg_str = msg.decode()
         try:
-            self.mqtt_perc = int(msg.decode())
-            print(f"MQTT command: {self.mqtt_perc}")
-        except: pass
+            if "mode_set" in topic_str:
+                self.hvac_mode = msg_str
+                print(f"MQTT HVAC Mode: {self.hvac_mode}")
+            elif "fan_set" in topic_str:
+                self.hvac_fan_mode = msg_str
+                # Map HA fan modes to power %
+                modes = {"low": 25, "medium": 50, "high": 75, "boost": 100}
+                self.target_power = float(modes.get(self.hvac_fan_mode, 50))
+                print(f"MQTT Fan Mode: {self.hvac_fan_mode} ({self.target_power}%)")
+            else:
+                self.mqtt_perc = int(msg_str)
+                print(f"MQTT raw command: {self.mqtt_perc}")
+        except Exception as e:
+            print(f"MQTT Callback error: {e}")
 
     def connect_mqtt(self):
         if not self.config['ADAFRUIT_USERNAME'] or not self.config['ADAFRUIT_IO_KEY']:
@@ -220,9 +240,18 @@ class OpenERVCore:
             self.wdt.feed()
             client.connect()
             client.subscribe(mqtt_feedname)
-            print("MQTT Connected")
+            
+            # HA Discovery
+            self.discovery = MQTTDiscovery(client, self.config)
+            self.discovery.publish_configs()
+            # Subscribe to command topics
+            client.subscribe(f"{self.discovery.base_topic}/mode_set")
+            client.subscribe(f"{self.discovery.base_topic}/fan_set")
+            
+            print("MQTT Connected & Discovery Published")
             return 1, client
-        except:
+        except Exception as e:
+            print(f"MQTT connection failed: {e}")
             return 0, None
 
     def period_time_calc(self):
@@ -254,6 +283,28 @@ class OpenERVCore:
                 self.sync_pressure_offset = new_offset
                 print(f"Sync received: Offset={self.sync_pressure_offset}")
 
+    def update_mqtt_state(self, pressure):
+        if not self.discovery:
+            return
+            
+        state = {
+            "pressure": pressure,
+            "temperature": self.current_temp,
+            "mode": self.hvac_mode,
+            "fan_mode": self.hvac_fan_mode
+        }
+        
+        if self.co2_sensor:
+            co2, temp, humi = self.co2_sensor.get_reading()
+            if co2 is not None:
+                state["co2"] = co2
+                state["humidity"] = humi
+                state["temperature"] = temp # Use more accurate sensor if available
+        
+        self.discovery.update_state(state)
+        self.discovery.update_mode(self.hvac_mode)
+        self.discovery.update_fan_mode(self.hvac_fan_mode)
+
     def run(self):
         print("Starting OpenERV Core Engine...")
         has_config = self.load_persistent_vars()
@@ -276,12 +327,28 @@ class OpenERVCore:
         if self.config['leader_or_follower'] == "leader" and wlan and wlan.isconnected():
             self.mqtt_connected, self.client = self.connect_mqtt()
 
+        self.last_mqtt_state_update = 0
+
         while True:
             self.wdt.feed()
             pressure = self.check_actual_pressure()
             
+            if self.client:
+                try:
+                    self.client.check_msg()
+                except: pass
+                
+            if time.time() - self.last_mqtt_state_update > 30:
+                self.update_mqtt_state(pressure)
+                self.last_mqtt_state_update = time.time()
+
             if not self.handle_safety_checks():
                 time.sleep(5)
+                continue
+
+            if self.hvac_mode == "off":
+                self.fans.update(0, 0)
+                time.sleep(1)
                 continue
 
             self.handle_sync()
@@ -307,7 +374,11 @@ class OpenERVCore:
                 continue
 
             # 2. Normal State-machine logic
-            self.main_perc = self.get_effective_power()
+            # Use MQTT fan mode if specified, otherwise use pot/CO2
+            if self.hvac_fan_mode == "medium" and self.target_power == 50.0:
+                 self.main_perc = self.get_effective_power()
+            else:
+                 self.main_perc = self.target_power
             
             period = self.period_time_calc()
             
@@ -320,10 +391,18 @@ class OpenERVCore:
             self.pid_ingress.set_auto_mode(True, last_output=self.last_ingress_throttle)
             while (self.ticks_ms_synced() % period) < period / 2:
                 self.handle_sync() # Keep sync active during loops
+                if self.client:
+                    try: self.client.check_msg()
+                    except: pass
+                if self.hvac_mode != "heat_cool": break # Exit loop if mode changed
                 self.last_ingress_throttle = self.pid_ingress(self.check_actual_pressure())
                 self.wdt.feed()
                 time.sleep(0.1)
             self.pid_ingress.set_auto_mode(False)
+
+            if self.hvac_mode == "fan_only":
+                # Free cooling mode: stay in ingress (supply)
+                continue
 
             # Egress Phase
             cp_egress = self.check_cp_egress()
@@ -334,6 +413,10 @@ class OpenERVCore:
             self.pid_egress.set_auto_mode(True, last_output=self.last_egress_throttle)
             while (self.ticks_ms_synced() % period) >= period / 2:
                 self.handle_sync() # Keep sync active during loops
+                if self.client:
+                    try: self.client.check_msg()
+                    except: pass
+                if self.hvac_mode != "heat_cool": break
                 self.last_egress_throttle = self.pid_egress(self.check_actual_pressure())
                 self.wdt.feed()
                 time.sleep(0.1)

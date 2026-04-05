@@ -27,9 +27,23 @@ class ADC:
 
 class I2C:
     def __init__(self, id, scl=None, sda=None, freq=400000):
+        self.fail_mode = False
+        self.drift_offset = 0.0
+        self._read_count = 0
+
+    def writeto(self, addr, data): 
+        if self.fail_mode: raise Exception("I2C Bus Error")
         pass
-    def writeto(self, addr, data): pass
-    def readfrom(self, addr, nbytes): return b'\x00' * 9 # Return default 9 bytes for sensor
+
+    def readfrom(self, addr, nbytes):
+        if self.fail_mode: raise Exception("I2C Bus Error")
+        
+        # Simulate intermittent failures every 100 reads
+        self._read_count += 1
+        if self._read_count % 100 == 0:
+            return b'\xFF' * nbytes # Garbage data
+            
+        return b'\x00' * nbytes # Default mock data
 
 class WDT:
     def __init__(self, timeout): pass

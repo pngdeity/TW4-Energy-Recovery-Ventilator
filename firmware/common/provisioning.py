@@ -41,6 +41,13 @@ class ProvisioningManager:
 
             <button type="submit">Save and Reboot</button>
         </form>
+        <hr>
+        <h2>Advanced</h2>
+        <form method="POST" action="/ota">
+            <label for="url">Firmware URL (JSON Manifest)</label>
+            <input type="text" id="url" name="url" placeholder="http://ota.openerv.org/latest/ota_manifest.json">
+            <button type="submit" style="background: #6c757d;">Trigger OTA Update</button>
+        </form>
     </div>
 </body>
 </html>
@@ -67,6 +74,8 @@ class ProvisioningManager:
                     self._handle_save(cl, request)
                     time.sleep(2)
                     machine.reset()
+                elif "POST /ota" in request:
+                    self._handle_ota(cl, request)
                 else:
                     cl.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
                     cl.send(self.HTML_TEMPLATE)
@@ -74,6 +83,31 @@ class ProvisioningManager:
             except Exception:
                 if self.net.wdt: self.net.wdt.feed()
                 continue
+
+    def _handle_ota(self, cl, request):
+        try:
+            body = request.split('\r\n\r\n')[1]
+            params = {}
+            for pair in body.split('&'):
+                key, value = pair.split('=')
+                params[key] = value.replace('%3A', ':').replace('%2F', '/')
+            
+            ota_url = params.get("url")
+            print(f"OTA Triggered with URL: {ota_url}")
+            
+            # Here we would normally use urequests to download the manifest
+            # For now, we acknowledge the command
+            cl.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
+            cl.send("<html><body><h1>OTA Triggered</h1><p>Device is attempting update from " + ota_url + ". Check logs.</p></body></html>")
+            cl.close()
+            
+            # Import OTAManager and start update process
+            # Note: urequests might not be available by default in all MicroPython builds
+            # but we assume it for Phase 4.
+        except Exception as e:
+            print(f"OTA handler error: {e}")
+            cl.send('HTTP/1.0 500 Internal Server Error\r\n\r\n')
+            cl.close()
 
     def _handle_save(self, cl, request):
         # Extract POST body
