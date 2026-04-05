@@ -2,14 +2,14 @@ name: STL Manufacturing Analysis
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, v1.5-industrial-parity ]
     paths:
       - 'design/parts/**/*.stl'
       - 'design/config/*.ini'
       - 'scripts/analyze_stls.py'
       - '.github/workflows/stl-analysis.yml'
   pull_request:
-    branches: [ main ]
+    branches: [ main, v1.5-industrial-parity ]
 
 permissions:
   contents: read

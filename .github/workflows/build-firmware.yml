@@ -2,9 +2,14 @@ name: Build Flashable Firmware (UF2)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, v1.5-industrial-parity ]
     tags:
       - 'v*'
+    paths:
+      - 'firmware/**'
+      - '.github/workflows/build-firmware.yml'
+  pull_request:
+    branches: [ main, v1.5-industrial-parity ]
     paths:
       - 'firmware/**'
       - '.github/workflows/build-firmware.yml'
