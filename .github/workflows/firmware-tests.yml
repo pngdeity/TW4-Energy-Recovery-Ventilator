@@ -2,13 +2,13 @@ name: Firmware Logic Tests
 
 on:
   push:
-    branches: [ main, v1.5-industrial-parity ]
+    branches: [ "**" ]
     paths:
       - 'firmware/**'
       - 'tests/**'
       - '.github/workflows/firmware-tests.yml'
   pull_request:
-    branches: [ main, v1.5-industrial-parity ]
+    branches: [ "**" ]
     paths:
       - 'firmware/**'
       - 'tests/**'
