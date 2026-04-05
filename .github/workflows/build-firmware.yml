@@ -59,6 +59,7 @@ jobs:
           repository: micropython/micropython
           path: micropython
           ref: v1.24.1
+          fetch-depth: 0
 
       - name: Cache mpy-cross
         id: cache-mpy-cross
@@ -120,6 +121,7 @@ jobs:
           repository: micropython/micropython
           path: micropython
           ref: v1.24.1
+          fetch-depth: 0
 
       - name: Restore mpy-cross
         if: steps.skip_check.outputs.should_run == 'true'
