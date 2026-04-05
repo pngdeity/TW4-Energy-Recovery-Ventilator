@@ -22,6 +22,11 @@ This roadmap outlines the critical tasks and features required to reach a Versio
 - [ ] **Production Gerbers**: Include a verified set of Gerber files in each release.
 - [ ] BOM Finalization: Finalize LCSC part mappings for all components to support automated PCBA services.
 
-## 5. Community & Standards
+## 5. Universal Window Mount
+- [ ] **Validated Pioneer Assembly**: Confirm physical fitment and weight distribution for Pioneer ECOasis 50 units.
+- [ ] **Validated Vents-US Assembly**: Confirm dual-sill support integrity for the 19lb TwinFresh Comfo unit.
+- [ ] **Parametric Engine Finalization**: Complete all OpenSCAD modules for auto-generating sliders and collars for any pipe diameter between 100mm and 200mm.
+
+## 6. Community & Standards
 - [ ] **OKH Certification**: Submit the project for official Open Source Hardware Association (OSHWA) certification.
 - [ ] **Contributor Guide**: Expand `CONTRIBUTING.md` with technical environment setup instructions.

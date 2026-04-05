@@ -25,6 +25,7 @@ OpenERV is a 87%+ efficiency DIY **Energy Recovery Ventilator (ERV)** system des
   - `tw4/`, `wm12/`: Model-specific entry points.
 - **`design/`**: Mechanical and electrical design assets.
   - `parts/`: STL and STEP files for all printable components.
+  - `universal_window_mount/`: (Submodule) Adjustable, insulated mounting system for commercial and DIY ERVs.
   - `schematics/`: PCB designs and wiring diagrams.
 - **`docs/`**: Manuals, assembly guides, and technical specifications.
 - **`research/`**: Historical CAD iterations and experimental validation data.

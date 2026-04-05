@@ -8,6 +8,7 @@ This directory contains all the mechanical and electrical design files for the O
   - **`common/`**: Parts shared by both TW4 and WM12 models (covers, plates, noise splitters).
   - **`tw4/`**: Parts unique to the TW4 model (e.g., flow straighteners).
   - **`wm12/`**: Parts unique to the WM12 model (e.g., window adapters).
+  - **`universal_window_mount/`**: (Submodule) A repeatable, insulated mounting system for commercial and DIY ERVs. [View Repo](https://github.com/pngdeity/Universal-ERV-Window-Mount)
 - **`schematics/`**: Electrical schematics, PCB layouts, and sensor pinouts.
   - **`source/`**: Raw EasyEDA JSON source files.
 
